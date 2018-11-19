@@ -7,7 +7,13 @@ from states.help import Help
 from states.mainmenu import MainMenu
 from states.gameplay1 import Gameplay1
 import transitions
+import username
+import pigpio
+from pyudmx import pyudmx
+from rotary import RotaryEncoder
 
+RASPBERRY = username() == "pi"
+    
 class Game(object):
     """
     A single instance of this class is responsible for
@@ -26,6 +32,10 @@ class Game(object):
         states: a dict mapping state-names to GameState objects
         start_state: name of the first active game state
         """
+        
+        self.pi = pigpio.pi() if RASPBERRY else None
+        self.dmx = pyudmx.uDMXDevice() if RASPBERRY else None
+    
         self.done = False
         self.screen = screen
         self.clock = pg.time.Clock()
@@ -33,6 +43,9 @@ class Game(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
+        self.encoder = RotaryEncoder(self.pi) if RASPBERRY else None
+        self.encoder_events = []
+        
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
@@ -92,8 +105,8 @@ class Game(object):
 
 if __name__ == "__main__":
     pg.init()
-    screen = pg.display.set_mode((1366, 768))
-    transitions.init(screen, 1366, 768)
+    screen = pg.display.set_mode((1360, 768), pg.FULLSCREEN if RASPBERRY else 0)
+    transitions.init(screen, 1360, 768)
 
     states = {"MAINMENU": MainMenu(),
                    "GAMEPLAY1": Gameplay1(),

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pygame as pg
 from gamestate import GameState
+from userevents import *
 
 class MainMenu(GameState):
     choices_txt = ["Kuidas värve segada?", "Kuidas ekraan töötab?", "Miks paistavad asjad nii nagu nad paistavad?", "Mängu kasutusõpetus"]
@@ -16,22 +17,30 @@ class MainMenu(GameState):
         self.backgrounds = [pg.image.load("images/intro_bg_"+color+".png") for color in ["red", "green", "blue", "grey"]]
 
         self.choices = [self.font.render(txt, True, pg.Color("white")) for txt in self.choices_txt]
-
+        self.screen_color = pg.Color("grey")
 
     def get_event(self, event):
-        if event.type == pg.MOUSEBUTTONUP:
+        if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
+            (event.type == pg.MOUSEBUTTONUP and event.button == 1):
             self.next_state = self.states[self.active_choice]
             self.persist["state"] = self.next_state
-            if event.button == 1:
-                self.done = True
+            self.done = True
         elif event.type == pg.MOUSEBUTTONDOWN:
-                if event.button == 4:
-                    self.active_choice = (self.active_choice - 1) % 4
-                if event.button == 5:
-                    self.active_choice = (self.active_choice + 1) % 4
+            if event.button == 4:
+                self.active_choice = (self.active_choice - 1) % 4
+            if event.button == 5:
+                self.active_choice = (self.active_choice + 1) % 4
+        elif event.type == ROTARY_BUTTON:
+            if event.direction == 1:
+                self.active_choice = (self.active_choice + 1) % 4
+            else:
+                self.active_choice = (self.active_choice - 1) % 4
 
+            
     def draw(self, surface):
-        surface.blit(self.backgrounds[self.active_choice], (0, 0))
+        surface.fill(self.screen_color)
+
+        #surface.blit(self.backgrounds[self.active_choice], (0, 0))
         surface.blit(self.title, self.title_rect)
         for i, choice in enumerate(self.choices):
             y_help = 100 if i == 3 else 0
