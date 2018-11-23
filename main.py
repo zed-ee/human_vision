@@ -6,6 +6,7 @@ import pygame as pg
 from states.help import Help
 from states.mainmenu import MainMenu
 from states.gameplay1 import Gameplay1
+from states.calibrate import *
 import transitions
 import username
 import pigpio
@@ -45,11 +46,13 @@ class Game(object):
         self.state = self.states[self.state_name]
         self.encoder = RotaryEncoder(self.pi) if RASPBERRY else None
         self.encoder_events = []
+        self.state.startup(self.state.persist)
         
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
         for event in pg.event.get():
+            print("event", event)
             if event.type == pg.QUIT:
                 self.done = True
                 break
@@ -112,8 +115,14 @@ if __name__ == "__main__":
                    "GAMEPLAY1": Gameplay1(),
                     "GAMEPLAY2": Gameplay1(),
                     "GAMEPLAY3": Gameplay1(),
+                    "CALIBRATE": Calibrate(),
+                    "CALIBRATE0": Calibrate0(),
+                    "CALIBRATE1": Calibrate1(),
+                    "CALIBRATE2": Calibrate(),
+                    "CALIBRATE3": Calibrate(),
+                    
                     "HELP": Help()}
-    game = Game(screen, states, "MAINMENU")
+    game = Game(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])
     game.run()
     pg.quit()
     sys.exit()

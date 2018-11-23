@@ -81,12 +81,12 @@ class RotaryEncoder:
             if gpio != self.lastGpio[i]: # debounce
                 self.lastGpio[i] = gpio
 
-            if   gpio == self.gpioA[i] and level == 1:
-                if self.levB[i] == 1:
-                    pg.event.post(pg.event.Event(ROTARY_BUTTON, {"button": i, "direction": 1}))
-            elif gpio == self.gpioB[i] and level == 1:
-                if self.levA[i] == 1:                    
-                    pg.event.post(pg.event.Event(ROTARY_BUTTON, {"button": i, "direction": -1}))
+                if gpio == self.gpioA[i] and level == 1:
+                    if self.levB[i] == 1:
+                        pg.event.post(pg.event.Event(ROTARY_BUTTON, {"button": i, "direction": 1}))
+                elif gpio == self.gpioB[i] and level == 1:
+                    if self.levA[i] == 1:                    
+                        pg.event.post(pg.event.Event(ROTARY_BUTTON, {"button": i, "direction": -1}))
 
         return _pulse
 

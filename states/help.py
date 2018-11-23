@@ -11,8 +11,7 @@ class Help(GameState):
 
     def startup(self, persistent):
         self.persist = persistent
-        color = "dodgerblue"
-        self.screen_color = pg.Color(color)
+        self.screen_color = pg.Color("dodgerblue")
         text = "Kahjuks pole meil veel juhendit"
 
         self.title = self.font.render(text, True, pg.Color("gray10"))
