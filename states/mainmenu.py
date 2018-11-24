@@ -7,7 +7,7 @@ DEV = True
 from config import config
 
 class MainMenu(GameState):
-    choices_txt = [
+    choices = [
         "Kuidas värve segada?", 
         "Kuidas ekraan töötab?", 
         "Miks paistavad asjad nii nagu nad paistavad?", 
@@ -25,18 +25,24 @@ class MainMenu(GameState):
         self.next_state = self.states[self.active_choice]
         self.backgrounds = [pg.image.load("images/intro_bg_"+color+".png") for color in ["red", "green", "blue", "grey"]]
 
-        self.choices = [self.font.render(txt, True, pg.Color("white")) for txt in self.choices_txt]
+        self.choices_txt = [self.font.render(txt, True, pg.Color("white")) for txt in self.choices]
         self.screen_color = pg.Color("grey")
         
     def startup(self, persistent):
-        dmx.send_rgb(255,0,0)
+        self.persist = persistent
+        dmx.send_rgb(255, 0, 0)
         dmx.send_rt(*config.load("MAINMENU", "rt", [[0,0],[0,0], [0,0]]))
-        
+        self.active_choice = 0
+
+    def get_selection(self):
+        self.next_state = self.states[self.active_choice]
+        self.persist["state"] = self.next_state
+        self.persist["choice"] = self.choices[self.active_choice]
+
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 1):
-            self.next_state = self.states[self.active_choice]
-            self.persist["state"] = self.next_state
+            self.get_selection()
             self.done = True
         elif event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 4:
@@ -60,7 +66,7 @@ class MainMenu(GameState):
 
         #surface.blit(self.backgrounds[self.active_choice], (0, 0))
         surface.blit(self.title, self.title_rect)
-        for i, choice in enumerate(self.choices):
+        for i, choice in enumerate(self.choices_txt):
             if self.states[i] == "":
                 continue
             y_help = 0#100 if i == 4 else 0
@@ -69,3 +75,12 @@ class MainMenu(GameState):
             if i == self.active_choice:
                 pg.draw.circle(surface, pg.Color("red"), (120, 310+96*i + y_help), 20, 0);
 
+
+class SubMenu(MainMenu):
+    choices = []
+
+    def __init__(self):
+        super(SubMenu, self).__init__()
+
+    def draw(self, surface):
+        surface.fill(self.screen_color)

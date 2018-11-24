@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
-import pigpio
-import pygame as pg
+try:
+    import pigpio
+except:
+    pass
 
+import pygame as pg
 from userevents import *
+
 
 class RotaryEncoder:
 

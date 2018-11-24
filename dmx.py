@@ -1,4 +1,8 @@
-from pyudmx import pyudmx
+try:
+    from pyudmx import pyudmx
+except:
+    pyudmx = None
+    pass
 
 CHANNEL_ROTATION = 1
 CHANNEL_TILT = 2
@@ -13,9 +17,9 @@ class uDMX(object):
     channels = [0, 10, 20]
     
 
-    dmx = pyudmx.uDMXDevice()
-    
+
     def __init__(self):
+        self.dmx = pyudmx.uDMXDevice()
         self.dmx.open()
 
     def __del__(self):
@@ -40,8 +44,17 @@ class uDMX(object):
         self.dmx.send_single_value(self.channels[0]+2, r[1])
         self.dmx.send_single_value(self.channels[1]+2, g[1])
         self.dmx.send_single_value(self.channels[2]+2, b[1])
-        
-dmx = uDMX()
+
+
+class uDMXDummy(object):
+    def send_rgb(self, r, g, b):
+        pass
+
+    def send_rt(self, r, g, b):
+        pass
+
+
+dmx = uDMX() if pyudmx else uDMXDummy()
 
 if __name__ == "__main__":
     dmx.send_rgb(255,155,255)

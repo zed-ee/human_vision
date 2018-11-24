@@ -5,16 +5,13 @@ import sys
 import pygame as pg
 from states.help import Help
 from states.mainmenu import MainMenu
-from states.gameplay1 import Gameplay1
+from states.gameplay1 import *
 from states.calibrate import *
 import transitions
 import username
-import pigpio
-from pyudmx import pyudmx
-from rotary import RotaryEncoder
 
 RASPBERRY = username() == "pi"
-    
+
 class Game(object):
     """
     A single instance of this class is responsible for
@@ -34,9 +31,6 @@ class Game(object):
         start_state: name of the first active game state
         """
         
-        self.pi = pigpio.pi() if RASPBERRY else None
-        self.dmx = pyudmx.uDMXDevice() if RASPBERRY else None
-    
         self.done = False
         self.screen = screen
         self.clock = pg.time.Clock()
@@ -44,8 +38,6 @@ class Game(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
-        self.encoder = RotaryEncoder(self.pi) if RASPBERRY else None
-        self.encoder_events = []
         self.state.startup(self.state.persist)
         
 
@@ -111,9 +103,13 @@ if __name__ == "__main__":
     screen = pg.display.set_mode((1360, 768), pg.FULLSCREEN if RASPBERRY else 0)
     transitions.init(screen, 1360, 768)
 
-    states = {"MAINMENU": MainMenu(),
+    states = {
+        "MAINMENU": MainMenu(),
                    "GAMEPLAY1": Gameplay1(),
-                    "GAMEPLAY2": Gameplay1(),
+              "GAMEPLAY1a": Gameplay1a(),
+              "GAMEPLAY1aa": Gameplay1aa(),
+              "GAMEPLAY1b": Gameplay1a(),
+              "GAMEPLAY2": Gameplay1(),
                     "GAMEPLAY3": Gameplay1(),
                     "CALIBRATE": Calibrate(),
                     "CALIBRATE0": Calibrate0(),
