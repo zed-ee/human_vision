@@ -46,7 +46,7 @@ class Game(object):
     def event_loop(self):
         """Events are passed for handling to the current state."""
         for event in pg.event.get():
-            print("event", event)
+            #print("event", event)
             if event.type == pg.QUIT:
                 self.done = True
                 break
@@ -109,18 +109,24 @@ if __name__ == "__main__":
     states = {
         "MAINMENU": MainMenu(),
         "RESULT": Result(),
-                   "GAMEPLAY1": Gameplay1(),
-              "GAMEPLAY1a": Gameplay1a(),
-              "GAMEPLAY1aa": Gameplay1aa(),
-              "GAMEPLAY1b": Gameplay1a(),
-              "GAMEPLAY2": Gameplay1(),
-                    "GAMEPLAY3": Gameplay1(),
-                    "CALIBRATE": Calibrate(),
-                    "CALIBRATE_CENTER": CalibrateCenter(),
-                    "CALIBRATE_OFFSET": CalibrateOffset(),
-                    "CALIBRATE_SIDEBYSIDE": CalibrateSideBySide(),
-                    "CALIBRATE_LOW": CalibrateLow(),
-                    "CALIBRATE_HIGH": CalibrateHigh(),
+        "GAMEPLAY1": Gameplay1(),
+        
+        "GAMEPLAY1a": Gameplay1a(),
+        "GAMEPLAY1aa": Gameplay1aa(),
+#        "GAMEPLAY1ab": Gameplay1ab(),
+        
+        "GAMEPLAY1b": Gameplay1b(),
+        "GAMEPLAY1ba": Gameplay1ba(),
+        
+        "GAMEPLAY2": Gameplay1(),
+        
+        "GAMEPLAY3": Gameplay1(),
+        "CALIBRATE": Calibrate(),
+        "CALIBRATE_CENTER": CalibrateCenter(),
+        "CALIBRATE_OFFSET": CalibrateOffset(),
+        "CALIBRATE_SIDEBYSIDE": CalibrateSideBySide(),
+        "CALIBRATE_LOW": CalibrateLow(),
+        "CALIBRATE_HIGH": CalibrateHigh(),
                     
                     "HELP": Help()}
     game = Game(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])

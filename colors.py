@@ -17,7 +17,7 @@ COLORS = [
     #("Kollane", pg.Color(255, 255, 0, 255), 60, 100, 100, 592),
     #("Meresinine", pg.Color(0, 0, 128, 255), 240, 100, 50, 507),
     #("Merevaik", pg.Color(255, 191, 0, 255), 45, 100, 100, 599),
-    ("Messing", pg.Color(181, 166, 66, 255), 37, 119, 124, 603),
+    ("Messing", pg.Color(181, 166, 66, 255), 52, 47, 48, 603),
     #("Punane", pg.Color(255, 0, 0, 255), 0, 100, 100, 620),
     #("Pruun", pg.Color(150, 75, 0, 255), 30, 100, 59, 606),
     #("Rohekassinine", pg.Color(0, 255, 255, 255), 180, 100, 100, 535),
@@ -38,7 +38,7 @@ COLORS = [
     #("Safran", pg.Color(244, 196, 48, 255), 45, 80, 96, 599),
     #("Kahvatusinine", pg.Color(175, 238, 238, 255), 180, 26, 93, 535),
     ("Pärsia sinine", pg.Color(28, 57, 187, 255), 248, 75, 50, 503),
-    ("Oliiviroheline", pg.Color(128, 128, 0, 255), 60, 100, 50, 592),
+    #("Oliiviroheline", pg.Color(128, 128, 0, 255), 60, 100, 50, 592),
     ("Sinepikollane", pg.Color(255, 219, 88, 255), 47, 65, 100, 598)
 ]
 

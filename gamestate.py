@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame as pg
+import pygame.freetype  # Import the freetype module.
 
 
 class GameState(object):
@@ -13,8 +14,8 @@ class GameState(object):
         self.next_state = None
         self.screen_rect = pg.display.get_surface().get_rect()
         self.persist = {}
-        self.title_font = pg.font.Font(pg.font.match_font('bitstreamverasans'), 48)
-        self.font = pg.font.Font(None, 32)
+        self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 48)
+        self.font =  pg.freetype.Font("fonts/Magra-Regular.ttf", 24)
         self.background = None
 
     def startup(self, persistent):

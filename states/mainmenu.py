@@ -20,12 +20,9 @@ class MainMenu(GameState):
 
     def __init__(self):
         super(MainMenu, self).__init__()
-        self.title = self.title_font.render(self.title_txt, True, pg.Color("white"))
-        self.title_rect = self.title.get_rect(center=self.screen_rect.center).move(0, -220)
         self.next_state = self.states[self.active_choice]
         self.backgrounds = [pg.image.load("images/intro_bg_"+color+".png") for color in ["red", "green", "blue", "grey"]]
 
-        self.choices_txt = [self.font.render(txt, True, pg.Color("white")) for txt in self.choices]
         self.screen_color = pg.Color("grey")
         self.previous_state = "MAINMENU"
 
@@ -74,7 +71,7 @@ class MainMenu(GameState):
         #surface.fill(self.screen_color)
 
         surface.blit(self.backgrounds[self.active_choice % len(self.backgrounds)], (0, 0))
-        surface.blit(self.title, self.title_rect)
+        self.title_font.render_to(self.title, (0,0))
         for i, choice in enumerate(self.choices_txt):
             if self.states[i] == "":
                 continue
@@ -86,9 +83,16 @@ class MainMenu(GameState):
 
 class GamePlay(GameState):
     back = "MAINMENU"
+    def chek_result(self):
+        pass
+        
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.BACK) or \
-            (event.type == pg.MOUSEBUTTONUP and event.button == 3):
+            (event.type == pg.MOUSEBUTTONUP and event.button == 2):
+            self.done = True        
+        elif (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
+            (event.type == pg.MOUSEBUTTONUP and event.button == 1):
+            self.chek_result()
             self.done = True
             
 class SubMenu(MainMenu):
@@ -102,22 +106,26 @@ class SubMenu(MainMenu):
         
         
 class Result(GameState):
-    texts = ["ÕIGE", "PROOVI VEEL"]
+    texts = ["PROOVI VEEL", "ÕIGE"]
     image = pg.image.load("images/ht_result.jpg")
+    next_state = "MAINMENU"
     
     def __init__(self):
         super(Result, self).__init__()
-        self.title = [self.title_font.render(title, True, pg.Color("white")) for text in self.texts]
-        self.title_rects = [title.get_rect(center=self.screen_rect.center).move(0, -220) for title in self.title]
-        
-        
+        self.title = [self.title_font.render(title, pg.Color("darkblue")) for title in self.texts]
     
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 1):
             self.next_state = self.persist["next_state"]
+            print("self.next_state", self.next_state)
             self.done = True
-    
-    def draw(self):
-        pass
+        elif (event.type == PUSH_BUTTON and event.button == BUTTONS.BACK) or \
+            (event.type == pg.MOUSEBUTTONUP and event.button == 2):
+            self.done = True
+            
+    def draw(self, surface):
+        surface.fill( pg.Color("darkgreen"))
+        surface.blit(self.image, (500, 30))
+        surface.blit(self.title[self.persist["result"]], self.title_rects[self.persist["result"]])
     
