@@ -15,7 +15,7 @@ class MainMenu(GameState):
         "Mängu kasutusõpetus"
     ]
     states = ["GAMEPLAY1", "GAMEPLAY2", "GAMEPLAY3", "CALIBRATE", "HELP"]
-    title_txt = "KUIDAS ME MAAILMA NÄEME?"
+    title = "KUIDAS ME MAAILMA NÄEME?"
     active_choice = 0
 
     def __init__(self):
@@ -71,18 +71,17 @@ class MainMenu(GameState):
         #surface.fill(self.screen_color)
 
         surface.blit(self.backgrounds[self.active_choice % len(self.backgrounds)], (0, 0))
-        self.title_font.render_to(self.title, (0,0))
-        for i, choice in enumerate(self.choices_txt):
+        self.title_font.render_to(surface, (300,20), self.title)
+        for i, choice in enumerate(self.choices):
             if self.states[i] == "":
                 continue
             y_help = 0#100 if i == 4 else 0
             rect = pg.Rect((0, 96*i), (0, 96*i + 96)).move(200, 300 + y_help)
-            surface.blit(choice, rect)
+            self.title_font.render_to(surface, rect, choice)
             if i == self.active_choice:
                 pg.draw.circle(surface, pg.Color("red"), (120, 310+96*i + y_help), 20, 0);
 
 class GamePlay(GameState):
-    back = "MAINMENU"
     def chek_result(self):
         pass
         
@@ -103,7 +102,9 @@ class SubMenu(MainMenu):
 
     def draw(self, surface):
         surface.fill(self.screen_color)
-        
+        self.title_font.render_to(surface, (300, 40), self.title)
+        self.font.render_to(surface, (300, 120), self.text[0])
+        self.font.render_to(surface, (300, 160), self.text[1])
         
 class Result(GameState):
     texts = ["PROOVI VEEL", "ÕIGE"]
@@ -112,8 +113,7 @@ class Result(GameState):
     
     def __init__(self):
         super(Result, self).__init__()
-        self.title = [self.title_font.render(title, pg.Color("darkblue")) for title in self.texts]
-    
+
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 1):
@@ -127,5 +127,6 @@ class Result(GameState):
     def draw(self, surface):
         surface.fill( pg.Color("darkgreen"))
         surface.blit(self.image, (500, 30))
-        surface.blit(self.title[self.persist["result"]], self.title_rects[self.persist["result"]])
+        self.title_font.render_to(surface, (550, 700), self.texts[self.persist["result"]] )
+
     

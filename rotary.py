@@ -3,6 +3,7 @@
 try:
     import pigpio
 except Exception as e:
+    pigpio = None
     print(e)
 
 import pygame as pg

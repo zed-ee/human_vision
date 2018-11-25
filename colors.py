@@ -49,6 +49,38 @@ RGB = [
 
 ]
 
+OTHER_COLORS = [
+    ("Beebisinine", pg.Color(111, 255, 255, 255), 180, 12, 100, 535),
+    ("Beež", pg.Color(245, 245, 220, 255), 60, 10, 96, 592),
+    ("Berliini sinine", pg.Color(0, 49, 83, 255), 205, 100, 33, 523),
+    ("Heleroheline", pg.Color(102, 255, 0, 255), 96, 100, 100, 575),
+    ("Hele türkiis", pg.Color(8, 232, 222, 255), 177, 97, 91, 536),
+    ("Kahvatu rukkilillesinine", pg.Color(171, 205, 239, 255), 210, 28, 94, 521),
+    ("Kahvatu roosa", pg.Color(250, 218, 221, 255), 354, 13, 98, 453),
+    ("Kinaverpunane", pg.Color(255, 77, 0, 255), 18, 100, 100, 612),
+    ("Kollane", pg.Color(255, 255, 0, 255), 60, 100, 100, 592),
+    ("Meresinine", pg.Color(0, 0, 128, 255), 240, 100, 50, 507),
+    ("Merevaik", pg.Color(255, 191, 0, 255), 45, 100, 100, 599),
+    ("Punane", pg.Color(255, 0, 0, 255), 0, 100, 100, 620),
+    ("Pruun", pg.Color(150, 75, 0, 255), 30, 100, 59, 606),
+    ("Rohekassinine", pg.Color(0, 255, 255, 255), 180, 100, 100, 535),
+    ("Roheline", pg.Color(0, 128, 0, 255), 120, 100, 25, 563),
+    ("Sinine", pg.Color(0, 0, 255, 255), 240, 100, 100, 507),
+    ("Taevasinine", pg.Color(0, 127, 255, 255), 210, 100, 100, 521),
+    ("Tsinvaldiit", pg.Color(235, 194, 175, 255), 19, 25, 92, 611),
+    ("Tsüaan", pg.Color(0, 255, 255, 255), 180, 100, 100, 535),
+    ("Tulipunane", pg.Color(255, 36, 0, 255), 8, 100, 100, 616),
+    ("Tüürose purpur", pg.Color(102, 2, 60, 255), 277, 67, 44, 489),
+    ("Sinakasroheline", pg.Color(0, 128, 128, 255), 180, 100, 50, 535),
+    ("Pruunikashall", pg.Color(72, 60, 50, 255), 30, 17, 34, 606),
+    ("Oranž", pg.Color(255, 128, 0, 255), 30, 100, 100, 606),
+    ("Safran", pg.Color(244, 196, 48, 255), 45, 80, 96, 599),
+    ("Kahvatusinine", pg.Color(175, 238, 238, 255), 180, 26, 93, 535),
+    ("Oliiviroheline", pg.Color(128, 128, 0, 255), 60, 100, 50, 592),
+]
+
+ALL_COLORS = COLORS + OTHER_COLORS + RGB
+
 def get_wavelength(color):
     return  650 - 170 / 360 * color[2];
 

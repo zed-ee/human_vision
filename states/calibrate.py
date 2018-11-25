@@ -10,13 +10,11 @@ from config import config
 class Calibrate(MainMenu):
     choices = ["Keskpunkt", "Keskpunkt, nihkega", "Kõrvuti", "Laiali 1", "Laiali 2"]
     states = ["CALIBRATE_CENTER", "CALIBRATE_OFFSET", "CALIBRATE_SIDEBYSIDE", "CALIBRATE_LOW", "CALIBRATE_HIGH"]
-    title_txt = "KUIDAS ME MAAILMA NÄEME?"
+    title_txt = "Kalibreeri prozektorire asukohti"
     
     def __init__(self):
         super(Calibrate, self).__init__()
-        self.title = self.title_font.render("Kalibreeri prozektorire asukohti", True, pg.Color("white"))
-        self.title_rect = self.title.get_rect(center=self.screen_rect.center).move(0, -220)
-        
+
     def startup(self, persistent):
         dmx.send_rgb(255,255,255)
         dmx.send_rt([0,0],[0,0], [0,0])
@@ -39,17 +37,12 @@ class CalibrateBase(GameState):
     title = ""
     rt = [[0,0],[0,0], [0,0]] # rotation & tilt
     conf = ""
-    
+    help = "Punane - pööra, Roheline - kalluta, Enter - salvesta"
+
     def __init__(self):
         super(CalibrateBase, self).__init__()
         self.next_state = "MAINMENU"
-        self.texts = [self.title_font.render(text, True, pg.Color("purple")) for text in self.states]
-        self.texts_rect = [text.get_rect(center=self.screen_rect.center) for text in self.texts]
-        self.help_text = self.font.render("Punane - pööra, Roheline - kalluta, Enter - salvesta", True, pg.Color("purple"))
-        self.help_rect = self.help_text.get_rect(center=self.screen_rect.center).move(0,200)
-        self.title_text = self.font.render(self.title, True, pg.Color("purple"))
-        self.title_rect = self.title_text.get_rect(center=self.screen_rect.center).move(0,-200)
-        
+
     def startup(self, persistent):
         self.rt = config.load("positions", self.conf, [[0,0],[0,0], [0,0]]) # rotation & tilt
         dmx.send_rgb(255,255,255)
@@ -78,12 +71,11 @@ class CalibrateBase(GameState):
 
     def draw(self, surface):
         surface.fill(self.screen_color)
-        surface.blit(self.texts[self.state], self.texts_rect[self.state])
-        surface.blit(self.help_text, self.help_rect)
-        surface.blit(self.title_text, self.title_rect)
-        
-        
-     
+
+        self.title_font.render_to(surface, (240, 40), self.title)
+        self.font.render_to(surface, (300, 320), self.help)
+        self.title_font.render_to(surface, (400, 260), self.states[self.state])
+
 class CalibrateCenter(CalibrateBase):
     title = "Liiguta prozektorid keskele, valge värvi saamiseks"
     conf = "center"    

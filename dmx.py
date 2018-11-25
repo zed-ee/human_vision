@@ -59,6 +59,11 @@ class uDMXDummy(object):
     def send_rt(self, r, g, b):
         pass
 
+    def set_mode(self, r, g, b):
+        pass
+
+    def reset(self):
+        pass
 
 dmx = uDMX() if pyudmx else uDMXDummy()
 
