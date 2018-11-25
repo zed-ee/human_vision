@@ -2,7 +2,7 @@
 import pygame as pg
 from gamestate import GameState
 from userevents import *
-from dmx import dmx
+from dmx import dmx, COLOR_WHEEL
 DEV = True
 from config import config
 
@@ -27,11 +27,13 @@ class MainMenu(GameState):
 
         self.choices_txt = [self.font.render(txt, True, pg.Color("white")) for txt in self.choices]
         self.screen_color = pg.Color("grey")
-        
+        self.previous_state = "MAINMENU"
+
     def startup(self, persistent):
+        self.rt = config.load("positions", "offset", [[[0,0],[0,0], [0,0]]])
         self.persist = persistent
-        dmx.send_rgb(255, 0, 0)
-        dmx.send_rt(*config.load("MAINMENU", "rt", [[0,0],[0,0], [0,0]]))
+        dmx.send_rgb(255, 255, 255)
+        dmx.send_rt(*self.rt)
         self.active_choice = 0
 
     def get_selection(self):
@@ -43,6 +45,10 @@ class MainMenu(GameState):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 1):
             self.get_selection()
+            self.done = True
+        elif (event.type == PUSH_BUTTON and event.button == BUTTONS.BACK) or \
+            (event.type == pg.MOUSEBUTTONUP and event.button == 2):
+            self.next_state = self.previous_state
             self.done = True
         elif event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 4:
@@ -59,12 +65,15 @@ class MainMenu(GameState):
             self.get_event(event)
             return;
            
-        dmx.send_rgb(255 if self.active_choice > 0 else 0, 255 if self.active_choice > 1 else 0, 255 if self.active_choice > 2 else 0)
+    def update(self, dt):
+        dmx.set_mode(COLOR_WHEEL[self.active_choice % 3], COLOR_WHEEL[(self.active_choice+1) % 3], COLOR_WHEEL[(self.active_choice+2) % 3])
+        
+
         
     def draw(self, surface):
-        surface.fill(self.screen_color)
+        #surface.fill(self.screen_color)
 
-        #surface.blit(self.backgrounds[self.active_choice], (0, 0))
+        surface.blit(self.backgrounds[self.active_choice % len(self.backgrounds)], (0, 0))
         surface.blit(self.title, self.title_rect)
         for i, choice in enumerate(self.choices_txt):
             if self.states[i] == "":
@@ -75,7 +84,13 @@ class MainMenu(GameState):
             if i == self.active_choice:
                 pg.draw.circle(surface, pg.Color("red"), (120, 310+96*i + y_help), 20, 0);
 
-
+class GamePlay(GameState):
+    back = "MAINMENU"
+    def get_event(self, event):
+        if (event.type == PUSH_BUTTON and event.button == BUTTONS.BACK) or \
+            (event.type == pg.MOUSEBUTTONUP and event.button == 3):
+            self.done = True
+            
 class SubMenu(MainMenu):
     choices = []
 
@@ -84,3 +99,25 @@ class SubMenu(MainMenu):
 
     def draw(self, surface):
         surface.fill(self.screen_color)
+        
+        
+class Result(GameState):
+    texts = ["ÕIGE", "PROOVI VEEL"]
+    image = pg.image.load("images/ht_result.jpg")
+    
+    def __init__(self):
+        super(Result, self).__init__()
+        self.title = [self.title_font.render(title, True, pg.Color("white")) for text in self.texts]
+        self.title_rects = [title.get_rect(center=self.screen_rect.center).move(0, -220) for title in self.title]
+        
+        
+    
+    def get_event(self, event):
+        if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
+            (event.type == pg.MOUSEBUTTONUP and event.button == 1):
+            self.next_state = self.persist["next_state"]
+            self.done = True
+    
+    def draw(self):
+        pass
+    

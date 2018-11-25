@@ -9,6 +9,8 @@ from states.gameplay1 import *
 from states.calibrate import *
 import transitions
 import username
+import rotary
+from dmx import dmx
 
 RASPBERRY = username() == "pi"
 
@@ -63,6 +65,7 @@ class Game(object):
             transitions.run("fadeOutDown", 0.6)
         else:
             transitions.run("fadeOutUp", 0.6)
+        dmx.reset()
 
     def update(self, dt):
         """
@@ -105,6 +108,7 @@ if __name__ == "__main__":
 
     states = {
         "MAINMENU": MainMenu(),
+        "RESULT": Result(),
                    "GAMEPLAY1": Gameplay1(),
               "GAMEPLAY1a": Gameplay1a(),
               "GAMEPLAY1aa": Gameplay1aa(),
@@ -112,10 +116,11 @@ if __name__ == "__main__":
               "GAMEPLAY2": Gameplay1(),
                     "GAMEPLAY3": Gameplay1(),
                     "CALIBRATE": Calibrate(),
-                    "CALIBRATE0": Calibrate0(),
-                    "CALIBRATE1": Calibrate1(),
-                    "CALIBRATE2": Calibrate(),
-                    "CALIBRATE3": Calibrate(),
+                    "CALIBRATE_CENTER": CalibrateCenter(),
+                    "CALIBRATE_OFFSET": CalibrateOffset(),
+                    "CALIBRATE_SIDEBYSIDE": CalibrateSideBySide(),
+                    "CALIBRATE_LOW": CalibrateLow(),
+                    "CALIBRATE_HIGH": CalibrateHigh(),
                     
                     "HELP": Help()}
     game = Game(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])

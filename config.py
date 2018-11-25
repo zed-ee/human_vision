@@ -15,3 +15,4 @@ def getSectionKeyValue(section, key, default):
 
 config.save = updateSectionKeyValue
 config.load = getSectionKeyValue
+

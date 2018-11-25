@@ -1,8 +1,8 @@
 try:
     from pyudmx import pyudmx
-except:
+except Exception as e:
     pyudmx = None
-    pass
+    print(e)
 
 CHANNEL_ROTATION = 1
 CHANNEL_TILT = 2
@@ -12,6 +12,8 @@ COLOR_WHITE = 0
 COLOR_RED = 11
 COLOR_GREEN = 44
 COLOR_BLUE = 55
+
+COLOR_WHEEL = [COLOR_RED, COLOR_GREEN, COLOR_BLUE]
 
 class uDMX(object):
     channels = [0, 10, 20]
@@ -25,17 +27,21 @@ class uDMX(object):
     def __del__(self):
         self.dmx.close()
         
-    def send_rgb(self, r, g, b):
-        self.dmx.send_single_value(self.channels[0]+4, COLOR_RED)
-        self.dmx.send_single_value(self.channels[1]+4, COLOR_GREEN)
-        self.dmx.send_single_value(self.channels[2]+4, COLOR_BLUE)
+    def reset(self):
+        self.set_mode(COLOR_RED, COLOR_GREEN, COLOR_BLUE)
         
+    def set_mode(self, r, g, b):
+        self.dmx.send_single_value(self.channels[0]+4, r)
+        self.dmx.send_single_value(self.channels[1]+4, g)
+        self.dmx.send_single_value(self.channels[2]+4, b)
+        
+    def send_rgb(self, r, g, b):        
         self.dmx.send_single_value(self.channels[0]+5, r)
         self.dmx.send_single_value(self.channels[1]+5, g)
         self.dmx.send_single_value(self.channels[2]+5, b)
 
     def send_rt(self, r, g, b):
-        print("send_rt", r, b, g)
+        #print("send_rt", r, b, g)
 
         self.dmx.send_single_value(self.channels[0]+1, r[0])
         self.dmx.send_single_value(self.channels[1]+1, g[0])

@@ -2,8 +2,8 @@
 
 try:
     import pigpio
-except:
-    pass
+except Exception as e:
+    print(e)
 
 import pygame as pg
 from userevents import *
@@ -16,10 +16,9 @@ class RotaryEncoder:
 
     """Class to decode mechanical rotary encoder pulses."""
 
-    def __init__(self, pi):
-   
+    def __init__(self):
+        self.pi = pigpio.pi()
         self.lastClick = 0
-        self.pi = pi
         self.gpioA = [19, 27, 13] # clk
         self.gpioB =  [26, 17, 22] #data
         self.btnEnter = 6
@@ -105,7 +104,10 @@ class RotaryEncoder:
             
         self.cbEnter.cancel()            
         self.cbBack.cancel()
-        
+       
+encoder = RotaryEncoder() if pigpio else None
+
+    
 if __name__ == "__main__":
 
     import time
