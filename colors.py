@@ -79,7 +79,18 @@ OTHER_COLORS = [
     ("Oliiviroheline", pg.Color(128, 128, 0, 255), 60, 100, 50, 592),
 ]
 
-ALL_COLORS = COLORS + OTHER_COLORS + RGB
+ALL_COLORS = COLORS + OTHER_COLORS + RGB + [
+("Valge", pg.Color(255, 255, 255, 255), 0, 0, 0, 0),
+("Must", pg.Color(0, 0, 0, 0), 0, 0, 0, 0),
+]
+
+
+def find_color(name, list):
+    for i in range(len(list)):
+        if list[i][0] == name:
+            return list[i]
+    return None
+
 
 def get_wavelength(color):
     return  650 - 170 / 360 * color[2];

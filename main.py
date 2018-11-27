@@ -6,6 +6,8 @@ import pygame as pg
 from states.help import Help
 from states.mainmenu import MainMenu
 from states.gameplay1 import *
+from states.gameplay2 import *
+from states.gameplay3 import *
 from states.calibrate import *
 import transitions
 import username
@@ -118,9 +120,14 @@ if __name__ == "__main__":
         "GAMEPLAY1b": Gameplay1b(),
         "GAMEPLAY1ba": Gameplay1ba(),
         
-        "GAMEPLAY2": Gameplay1(),
-        
-        "GAMEPLAY3": Gameplay1(),
+        "GAMEPLAY2": Gameplay2(),
+        "GAMEPLAY2a": Gameplay2a(),
+        "GAMEPLAY2b": Gameplay2b(),
+        "GAMEPLAY2ba": Gameplay2ba(),
+
+        "GAMEPLAY3": Gameplay3(),
+        "GAMEPLAY3a": Gameplay3a(),
+
         "CALIBRATE": Calibrate(),
         "CALIBRATE_CENTER": CalibrateCenter(),
         "CALIBRATE_OFFSET": CalibrateOffset(),
@@ -128,7 +135,8 @@ if __name__ == "__main__":
         "CALIBRATE_LOW": CalibrateLow(),
         "CALIBRATE_HIGH": CalibrateHigh(),
                     
-                    "HELP": Help()}
+         "HELP": Help()}
+
     game = Game(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])
     game.run()
     pg.quit()

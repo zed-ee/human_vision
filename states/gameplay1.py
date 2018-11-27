@@ -33,11 +33,13 @@ class Gameplay1a(SubMenu):
 
     def startup(self, persistent):
         self.choices = random.sample(COLORS, 9)
+        self.titles = [color[0] for color in self.choices]
         for c in self.choices:
             print(c)
         self.rt = config.load("positions", "center", [[0,0],[0,0], [0,0]])
         self.persist = persistent
         dmx.send_rt(*self.rt)
+
     def draw(self, surface):
         super(Gameplay1a, self).draw(surface)
         for i in range(0, 3):
@@ -48,7 +50,7 @@ class Gameplay1a(SubMenu):
                 if i*3+j == self.active_choice:
                     pg.draw.circle(surface, pg.Color(255, 255, 255 , 0) - color[1], xy1, 55, 7)
                 pg.draw.circle(surface, color[1], xy1, 50, 0)
-                self.font.render_to(surface, xy2, color[0])
+                self.font.render_to(surface, xy2, self.titles[i*3+j])
 
     def update(self, dt):
         c = self.choices[self.active_choice][1]
@@ -209,4 +211,39 @@ class Gameplay1ba(GamePlay):
         if self.closest is not None:
             self.font.render_to(surface, (400, 660), self.text[1].replace("x", self.closest[0]))
 
-    
+
+class Gameplay1ba(GamePlay):
+    title = "Sega kokku oma lemmikvärv"
+    text = ["Mulle meeldib ka see värv väga!",
+            "See meenutab mulle värvi nimega 'x'"]
+
+    rt = config.load("positions", "offset", [[0, 0], [0, 0], [0, 0]])
+
+    def __init__(self):
+        super(Gameplay1ba, self).__init__()
+        self.next_state = "MAINMENU"
+
+    def startup(self, persistent):
+        self.persist = persistent
+        dmx.send_rt(*self.rt)
+        self.closest = None
+        self.intensity = self.persist["rgb"];
+        min_stdev = 10
+        min_index = 0
+        for i, color in enumerate(ALL_COLORS):
+            stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]),
+                                      abs(color[1].b - self.intensity[2])])
+            if stdev < min_stdev:
+                min_stdev = stdev
+                min_index = i
+        self.closest = ALL_COLORS[min_index]
+
+    def draw(self, surface):
+        surface.fill(pg.Color("darkgreen"))
+        pg.draw.circle(surface, self.intensity, self.screen_rect.center, 160, 0);
+        self.title_font.render_to(surface, (300, 40), self.title)
+        self.font.render_to(surface, (400, 620), self.text[0])
+        if self.closest is not None:
+            self.font.render_to(surface, (400, 660), self.text[1].replace("x", self.closest[0]))
+
+
