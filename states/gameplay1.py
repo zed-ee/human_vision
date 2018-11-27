@@ -95,7 +95,7 @@ class Gameplay1aa(GamePlay):
 
         self.color_txt = "Domineeriv lainepikkus "+ str(self.color[5]) + " nm, valgustugevus "+str(self.color[4])+"%"
 
-        self.title = "Leia õige lainepikkus - " + self.color[0]
+        self.title_with_color = self.title + " - " + self.color[0]
 
 
     def update(self, dt):
@@ -106,7 +106,7 @@ class Gameplay1aa(GamePlay):
     def draw(self, surface):
 
         surface.fill( pg.Color("darkgreen"))
-        self.title_font.render_to(surface, (300, 40), self.title)
+        self.title_font.render_to(surface, (300, 40), self.title_with_color)
 
         self.font.render_to(surface, (300, 120), self.text[0])
         self.font.render_to(surface, (300, 160), self.text[1])
@@ -154,7 +154,7 @@ class Gameplay1b(Gameplay1aa):
         ]
         
     def update(self, dt):
-        pass
+        dmx.send_rgb(*self.inensity)
         
     def chek_result(self):
         self.next_state = "GAMEPLAY1ba"
