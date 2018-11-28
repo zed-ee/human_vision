@@ -5,6 +5,7 @@ from userevents import *
 from dmx import dmx, COLOR_WHEEL
 DEV = True
 from config import config
+from colors import *
 
 class MainMenu(GameState):
     choices = [
@@ -68,9 +69,9 @@ class MainMenu(GameState):
 
         
     def draw(self, surface):
-        #surface.fill(self.screen_color)
+        surface.fill(COLORS[self.active_choice %3][1])
 
-        surface.blit(self.backgrounds[self.active_choice % len(self.backgrounds)], (0, 0))
+        #surface.blit(self.backgrounds[self.active_choice % len(self.backgrounds)], (0, 0))
         self.title_font.render_to(surface, (300,20), self.title)
         for i, choice in enumerate(self.choices):
             if self.states[i] == "":

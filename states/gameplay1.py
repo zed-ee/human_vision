@@ -61,6 +61,7 @@ class Gameplay1aa(GamePlay):
     text = ["Värve saab kombineerida erinevatest lainepikkustest. Sega kolmes põhivärvist kokku valitud värv. ",
                  "Selleks tuleb sul prožektori valgused seadistada õigetele valgustugevustele, kasutades pöördnuppe."]
     title = "Leia õige lainepikkus"
+    rotary_step = 1
     
     def __init__(self):
         super(Gameplay1aa, self).__init__()
@@ -71,14 +72,14 @@ class Gameplay1aa(GamePlay):
     def get_event(self, event):
         if event.type == ROTARY_BUTTON:
             if event.direction == 1:
-               self.inensity[event.button] = min(255, self.inensity[event.button] + 1)
+               self.inensity[event.button] = min(255, self.inensity[event.button] + self.rotary_step)
             else:
-               self.inensity[event.button] = max(0, self.inensity[event.button] - 1)
+               self.inensity[event.button] = max(0, self.inensity[event.button] - self.rotary_step)
         elif event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 4:
-                self.inensity[0] = min(255, self.inensity[0] + 1)
+                self.inensity[0] = min(255, self.inensity[0] + self.rotary_step)
             elif event.button == 5:
-                self.inensity[0] = max(0, self.inensity[0] - 1)
+                self.inensity[0] = max(0, self.inensity[0] - self.rotary_step)
         else:
             super(Gameplay1aa, self).get_event(event)
 

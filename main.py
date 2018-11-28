@@ -63,10 +63,10 @@ class Game(object):
         persistent = self.state.persist
         self.state = self.states[self.state_name]
         self.state.startup(persistent)
-        if next_state == "MAINMENU":
-            transitions.run("fadeOutDown", 0.6)
-        else:
-            transitions.run("fadeOutUp", 0.6)
+        #if next_state == "MAINMENU":
+        #    transitions.run("fadeOutDown", 0.6)
+        #else:
+        #    transitions.run("fadeOutUp", 0.6)
         dmx.reset()
 
     def update(self, dt):
@@ -97,8 +97,8 @@ class Game(object):
             dt = self.clock.tick(self.fps)
             self.event_loop()
             self.update(dt)
-            if transitions.updateScreen() == False:
-                self.draw()
+            #if transitions.updateScreen() == False:
+            self.draw()
             pg.display.update()
 
 
@@ -106,7 +106,7 @@ class Game(object):
 if __name__ == "__main__":
     pg.init()
     screen = pg.display.set_mode((1360, 768), pg.FULLSCREEN if RASPBERRY else 0)
-    transitions.init(screen, 1360, 768)
+    #transitions.init(screen, 1360, 768)
 
     states = {
         "MAINMENU": MainMenu(),
@@ -122,6 +122,7 @@ if __name__ == "__main__":
         
         "GAMEPLAY2": Gameplay2(),
         "GAMEPLAY2a": Gameplay2a(),
+        "GAMEPLAY2ab": Gameplay2ab(),
         "GAMEPLAY2b": Gameplay2b(),
         "GAMEPLAY2ba": Gameplay2ba(),
 
