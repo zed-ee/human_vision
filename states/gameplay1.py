@@ -74,6 +74,11 @@ class Gameplay1aa(GamePlay):
                self.inensity[event.button] = min(255, self.inensity[event.button] + 1)
             else:
                self.inensity[event.button] = max(0, self.inensity[event.button] - 1)
+        elif event.type == pg.MOUSEBUTTONDOWN:
+            if event.button == 4:
+                self.inensity[0] = min(255, self.inensity[0] + 1)
+            elif event.button == 5:
+                self.inensity[0] = max(0, self.inensity[0] - 1)
         else:
             super(Gameplay1aa, self).get_event(event)
 
