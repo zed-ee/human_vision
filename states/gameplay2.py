@@ -125,7 +125,82 @@ class Gameplay2ab(Gameplay2a):
         pass
 
 class Gameplay2b(GameState):
-    pass
-    
+    size = [454.0, 760.0]
+    shift = 0
+    t = 1.0
+
+    def startup(self, persistent):
+        self.persist = persistent
+        self.t = 2.0
+        self.step = 3
+
+    def update(self, dt):
+        if self.t > 13000:
+            self.size[0] = self.size[0] - self.step / math.log(self.t)
+            self.size[1] = self.size[0] * 760.0 / 454.0
+        # self.size = [21, 49]
+        # self.size = [13, 34]
+        self.size = [0.9, 3]
+        self.t += dt
+
+    def draw_rgb(self, surface, size, screen, shift, intensity = 1):
+        surface2 = pg.Surface(screen)
+        surface2.fill(pg.Color("black"))
+        spacingx = 0.9 if size[0] > 2 else 1
+        for y in range(screen[1] // size[1] + 1):
+            for x in range(screen[0] // size[0]):
+                for i, c in enumerate(RGB):
+                    color = pg.Color(int(c[1][0] * intensity),int(c[1][1] * intensity),int(c[1][2] * intensity))
+                    pg.draw.rect(surface2, color, pg.Rect([0, 0, int(size[0] * spacingx), int(size[1] * 0.9)])
+                                 .move(x * size[0] * 3 + i * size[0], y * size[1])
+                                 .move(int(size[0] * 0.05), int(size[1] * 0.05))
+                                 , 0)
+
+                    # else:
+                    #    surface.set_at((x*size[0]*3+i*size[0], y*size[1]), c[1])
+
+                    # print(pg.Rect([0, 0, 20, 20]).move(i*x*20, y*20))
+        surface.blit(surface2, shift)
+
+    def draw(self, surface):
+        size = [int(x) for x in self.size]
+        screen = [surface.get_width(), surface.get_height()]
+
+        if size[0] > 60:
+            self.draw_rgb(surface, size, screen, (0, 0))
+        elif size[0] > 20:
+            self.draw_rgb(surface, [60, 118], screen, (0, 0), 0.7)
+            self.draw_rgb(surface, size, [60*18, 118*5], (120, 118))
+            self.step = 2
+        elif size[0] > 10:
+            self.draw_rgb(surface, [60, 118], screen, (0, 0), 0.5)
+            self.draw_rgb(surface, [20, 47], [120*9, 118*5], (120, 118), 0.7)
+            self.draw_rgb(surface, size, [20*30, 47*5], (20*9, 47*9))
+            self.step = 1.6
+        elif size[0] >= 3:
+            self.draw_rgb(surface, [60, 118], screen, (0, 0), 0.3)
+            self.draw_rgb(surface, [20, 47], [120*9, 118*5], (120, 118), 0.5)
+            self.draw_rgb(surface, [10, 18], [20*30, 47*5], (20*9, 47*9), 0.7)
+            self.draw_rgb(surface, size, [10*30, 18*5], (20*9+10*3, 47*9+18*7))
+            self.step = 1.4
+        elif size[0] >= 1:
+            self.draw_rgb(surface, [60, 118], screen, (0, 0), 0.2)
+            self.draw_rgb(surface, [20, 47], [120*9, 118*5], (120, 118), 0.3)
+            self.draw_rgb(surface, [10, 18], [20*30, 47*5], (20*9, 47*9), 0.5)
+            self.draw_rgb(surface, [3, 6], [10*30, 18*5], (20*9+10*3, 47*9+18*7), 0.7)
+            self.draw_rgb(surface, size, [5*30, 9*5], (5*4+20*9+10*3, 9*4+47*9+18*7))
+            self.step = 1.2
+
+        else:
+            self.draw_rgb(surface, [60, 118], screen, (0, 0), 0.2)
+            self.draw_rgb(surface, [20, 47], [120*9, 118*5], (120, 118), 0.3)
+            self.draw_rgb(surface, [10, 18], [20*30, 47*5], (20*9, 47*9), 0.5)
+            self.draw_rgb(surface, [3, 6], [300, 18*5], (210, 549), 0.7)
+            self.draw_rgb(surface, [1, 3], [150, 45], (230, 585))
+            pg.draw.rect(surface, pg.Color("white"), (240, 600, 26, 26), 0)
+            self.step = 1
+            print(size)
+
+
 class Gameplay2ba(GameState):
     pass
