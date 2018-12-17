@@ -20,10 +20,9 @@ class RotaryEncoder:
     def __init__(self):
         self.pi = pigpio.pi()
         self.lastClick = 0
-        self.gpioA = [19, 27, 13] # clk
-        self.gpioB =  [26, 17, 22] #data
-        self.btnEnter = 6
-        self.btnBack = 5
+        self.gpioA = [20, 6, 27] # clk
+        self.gpioB =  [19, 26, 17] #data
+        self.buttons = {13: BUTTONS.ENTER, 21: BUTTONS.BACK, 4: BUTTONS.CALIBRATE }
 
         self.levA = [0, 0, 0]
         self.levB =[0, 0, 0]
@@ -35,17 +34,17 @@ class RotaryEncoder:
         for pin in self.gpioB:
             self.pi.set_mode(pin, pigpio.INPUT)
 
-        self.pi.set_mode(self.btnEnter, pigpio.INPUT)
-        self.pi.set_mode(self.btnBack, pigpio.INPUT)
-
-        self.pi.set_pull_up_down(self.btnEnter, pigpio.PUD_UP)
-        self.pi.set_pull_up_down(self.btnBack, pigpio.PUD_UP)
+        for pin in self.buttons.keys():
+            self.pi.set_mode(pin, pigpio.INPUT)
+            self.pi.set_pull_up_down(pin, pigpio.PUD_UP)
+            
 
         self.cbA = [self.pi.callback(pin, pigpio.EITHER_EDGE, self.pulse(i)) for i, pin in enumerate(self.gpioA)]
         self.cbB = [self.pi.callback(pin, pigpio.EITHER_EDGE, self.pulse(i)) for i, pin in enumerate(self.gpioB)]
         
-        self.cbEnter = self.pi.callback(self.btnEnter, pigpio.RISING_EDGE , self.button)
-        self.cbBack = self.pi.callback(self.btnBack, pigpio.RISING_EDGE , self.button)
+        
+        self.cbButton = [self.pi.callback(pin, pigpio.EITHER_EDGE, self.button) for i, pin in enumerate(self.buttons.keys())]
+        
         self.draw()
 
     def draw(self):
@@ -54,13 +53,13 @@ class RotaryEncoder:
     def button(self, gpio, level, tick):
         if level and (tick - self.lastClick > 300000) : # 300ms
             print("select", gpio, level, tick, tick - self.lastClick)
-            pg.event.post(pg.event.Event(PUSH_BUTTON, {"button": gpio}))
+            pg.event.post(pg.event.Event(PUSH_BUTTON, {"button": self.buttons[gpio]}))
         self.lastClick = tick
         
         
     def pulse(self, i):
         def _pulse(gpio, level, tick):
-
+            # print("pulse",gpio, level, tick)
             """
             Decode the rotary encoder pulse.
 
@@ -87,9 +86,11 @@ class RotaryEncoder:
 
                 if gpio == self.gpioA[i] and level == 1:
                     if self.levB[i] == 1:
+                        print("rotary", i, 1)
                         pg.event.post(pg.event.Event(ROTARY_BUTTON, {"button": i, "direction": 1}))
                 elif gpio == self.gpioB[i] and level == 1:
-                    if self.levA[i] == 1:                    
+                    if self.levA[i] == 1:   
+                        print("rotary", i, -1)                    
                         pg.event.post(pg.event.Event(ROTARY_BUTTON, {"button": i, "direction": -1}))
 
         return _pulse
@@ -102,9 +103,9 @@ class RotaryEncoder:
             cb.cancel()
         for cb in self.cbB:
             cb.cancel()
+        for cb in self.cbButton:
+            cb.cancel()            
             
-        self.cbEnter.cancel()            
-        self.cbBack.cancel()
        
 encoder = RotaryEncoder() if pigpio else None
 
@@ -113,6 +114,7 @@ if __name__ == "__main__":
 
     import time
     import pigpio
+    from pyudmx import pyudmx
 
     pos = [0,0,0]
     dmx = [2, 3, 4]
