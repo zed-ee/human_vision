@@ -23,6 +23,7 @@ class GameState(object):
         self.screen_rect = pg.display.get_surface().get_rect()
         self.persist = {}
         self.font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 26)
+        self.font2 = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 36)
 
     def startup(self, persistent):
         """

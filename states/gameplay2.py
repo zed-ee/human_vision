@@ -12,8 +12,6 @@ class Gameplay2(Gameplay1):
 
 class Gameplay2a(Gameplay1aa):
     title = "Kuidas ekraan töötab"
-    text = ["Nagu sa juba tead, siis on igal värvil oma lainepikkus. Ühenda lained kolme põhivärviga ",
-            "Kinnita oma valikut punase nupuga"]
     center = config.load("positions", "sidebyside", [[0, 0], [0, 0], [0, 0]])
 
     frequency = [2, 3, 4]
@@ -22,10 +20,16 @@ class Gameplay2a(Gameplay1aa):
     aspeed = 2
     order = [0, 1, 2]
     rotary_step = 3
-
+    positions = [30, 127, 225]
 
     def __init__(self):
         super(Gameplay2a, self).__init__()
+        self.ht = AnimatedSprite(position=(1026, 196), images=load_images("images/ht/up"))
+        self.bubble = Sprite(position=(90, 216), image=load_image("images/bubbles/gameplay2a.png"))
+
+        self.r = AnimatedSprite(position=(220, 260), images=load_images("images/waves/red_small"))
+        self.g = AnimatedSprite(position=(220, 360), images=load_images("images/waves/green_small"))
+        self.b = AnimatedSprite(position=(220, 460), images=load_images("images/waves/blue_small"))
 
     def startup(self, persistent):
         persistent["choice"] = COLORS[random.randint(0, len(COLORS) - 1)]
@@ -35,7 +39,7 @@ class Gameplay2a(Gameplay1aa):
         if "order" not in self.persist or self.persist["order"] is None:
             while self.order == [0, 1, 2]:
                 self.order = random.sample([0, 1, 2],3)
-            self.inensity = [self.order[i]*127 for i in range(3)]
+            self.inensity = self.positions
         else:
             self.order = self.persist["order"]
             self.inensity = self.persist["inensity"]
@@ -48,38 +52,53 @@ class Gameplay2a(Gameplay1aa):
             "",
         ]
 
+    def intensity2pixel(self, i):
+        (i_min, i_max) = (0, 255)
+        (p_min, p_max) = (-20, 255)
+        return 300 + (i / i_max) * (p_max - p_min) + p_min
+
     def update(self, dt):
-        pass
-        
+
+        self.r.update(dt, None, self.intensity2pixel(self.inensity[self.order[0]]))
+        self.g.update(dt, None, self.intensity2pixel(self.inensity[self.order[1]]))
+        self.b.update(dt, None, self.intensity2pixel(self.inensity[self.order[2]]))
+
 
     def chek_result(self):
-        stdev = statistics.stdev([abs(i*127 - self.inensity[i]) for i in range(3)])
+        stdev = statistics.stdev([abs(self.positions[i] - self.inensity[self.order[i]]) for i in range(3)])
         print("stdev", stdev)
         result = stdev < 20
 
         self.next_state = "RESULT"
         self.persist["result"] = result
-        self.persist["next_state"] = "GAMEPLAY2ab" if result else "GAMEPLAY2a"
+        self.persist["next_state"] = "GAMEPLAY2" if result else "GAMEPLAY2a"
         self.persist["inensity"] = None if result else self.inensity
         self.persist["order"] = None if result else self.order
+        self.persist["title"] = self.title
         print("chek_result", self.persist)
 
     def draw(self, surface):
 
+        self.bubble.draw(surface)
+        self.ht.draw(surface)
 
         for i, freq in enumerate(self.frequency):
-            pg.draw.circle(surface, RGB[i][1], (200, 360 + i * 128), 40, 0)
-            lines = []
-            for xx in range(1, 400):
-                x = xx * 2
-                amplitude = self.amplitude * math.sin(self.aspeed*freq*time.time())
-                y = int((200/2) + (amplitude)*math.sin(freq*((float(x)/800)*(2*math.pi) + (self.speed*freq*time.time()))))
-                #surface.set_at((x+300, 250+y+self.inensity[i]), pg.Color("red"))
-                #pg.draw.circle(surface, pg.Color("red"), (x+300, 250+y+i*100),2 )
-                lines.append([x+300, 250+y+self.inensity[i]])
-            pg.draw.aalines(surface, pg.Color("red"), False, lines, 2)
 
+            pg.gfxdraw.filled_circle(surface, 142, 410 + i * 103, 40, RGB[i][1])
+            pg.gfxdraw.aacircle(surface, 142, 410 + i * 103, 40, pg.Color("black"))
+            # lines = []
+            # for xx in range(1, 400):
+            #     x = xx * 2
+            #     amplitude = self.amplitude * math.sin(self.aspeed*freq*time.time())
+            #     y = int((200/2) + (amplitude)*math.sin(freq*((float(x)/800)*(2*math.pi) + (self.speed*freq*time.time()))))
+            #     #surface.set_at((x+300, 250+y+self.inensity[i]), pg.Color("red"))
+            #     #pg.draw.circle(surface, pg.Color("red"), (x+300, 250+y+i*100),2 )
+            #     lines.append([x+300, 250+y+self.inensity[i]])
+            # pg.draw.aalines(surface, pg.Color("red"), False, lines, 2)
 
+        self.r.draw(surface)
+        self.g.draw(surface)
+        self.b.draw(surface)
 
 
 class Gameplay2ab(Gameplay2a):
@@ -88,40 +107,68 @@ class Gameplay2ab(Gameplay2a):
             "Neid on kolme tüüpi punase, rohelise ja sinise värvuse tajumise jaoks.",
             "Jätkamiseks ...."]
     next_state = "GAMEPLAY2"
-    
-    def startup(self, persistent):
-        persistent["choice"] = COLORS[random.randint(0, len(COLORS) - 1)]
-        super(Gameplay2ab, self).startup(persistent)
-        dmx.send_rt(*self.center)
-        dmx.send_rgb(*self.inensity)
-        self.inensity = [i*127 for i in range(3)]
-        self.rgb_txt = [
-            "",
-            "",
-            "",
-        ]
-        
-    def draw(self, surface):
-        surface.fill(pg.Color("darkgreen"))
-        self.title_font.render_to(surface, (300, 40), self.title)
-        self.font.render_to(surface, (300, 120), self.text[0])
-        self.font.render_to(surface, (300, 160), self.text[1])
 
-        for i, freq in enumerate(self.frequency):
-            pg.draw.circle(surface, RGB[i][1], (200, 360 + i * 128), 40, 0)
-            lines = []
-            for xx in range(1, 400):
-                x = xx * 2
-                amplitude = self.amplitude * math.sin(self.aspeed*freq*time.time())
-                y = int((200/2) + (amplitude)*math.sin(freq*((float(x)/800)*(2*math.pi) + (self.speed*freq*time.time()))))
-                #surface.set_at((x+300, 250+y+self.inensity[i]), pg.Color("red"))
-                #pg.draw.circle(surface, pg.Color("red"), (x+300, 250+y+i*100),2 )
-                lines.append([x+300, 250+y+i*127])
-            pg.draw.aalines(surface, RGB[i][1], False, lines, 2)
-    def chek_result(self):
+    def __init__(self):
+        super(Gameplay2a, self).__init__()
+        self.ht = AnimatedSprite(position=(1026, 196), images=load_images("images/ht/up"))
+        self.bubble = Sprite(position=(90, 216), image=load_image("images/bubbles/gameplay2a.png"))
+
+    def update(self, dt):
         pass
 
-class Gameplay2b(GameState):
+class Gameplay2b(Result):
+    answer = 25
+    def __init__(self):
+        super(Gameplay2b, self).__init__()
+        self.images = [Sprite(position=(0, 0), image=load_image("images/pixel/PIKSEL_"+str(x+1)+".png")) for x in range(2)]
+        self.next_state = "GAMEPLAY2b"
+
+    def startup(self, persistent):
+        self.rt = config.load("positions", "center", [[0, 0], [0, 0], [0, 0]])
+        self.persist = persistent
+        i = self.persist["sub_state"] if "sub_state" in self.persist else 0
+        self.image = self.images[i]
+        i = i + 1
+        if i >= len(self.images):
+            self.next_state = "GAMEPLAY2ba"
+        else:
+            self.persist["sub_state"] = i
+        self.persist["choice"] = 0
+
+    def draw(self, surface):
+        self.image.draw(surface)
+
+class Gameplay2ba(SubMenu):
+    answer = 25
+    def __init__(self):
+        super(Gameplay2ba, self).__init__()
+        self.image = Sprite(position=(0, 0), image=load_image("images/pixel/PIKSEL_3.png"))
+        self.next_state = "RESULT"
+        self.choices = range(100)
+
+    def startup(self, persistent):
+        self.rt = config.load("positions", "center", [[0, 0], [0, 0], [0, 0]])
+        self.persist = persistent
+        self.active_choice = self.persist["choice"]
+
+    def get_selection(self):
+        result = self.active_choice == self.answer
+        self.next_state = "RESULT"
+        self.persist["choice"] = self.choices[self.active_choice]
+        self.persist["result"] = result
+        self.persist["next_state"] = "MAINMENU" if result else "GAMEPLAY2ba"
+        self.persist["back"] = result
+        print("check_result", self.persist)
+
+
+
+    def draw(self, surface):
+        self.image.draw(surface)
+        self.font2.render_to(surface, (240, 620), str(self.active_choice), pg.Color(220, 98, 30))
+
+
+
+class Gameplay2b_old(GameState):
     size = [454.0, 760.0]
     shift = 0
     t = 1.0
@@ -137,7 +184,7 @@ class Gameplay2b(GameState):
             self.size[1] = self.size[0] * 760.0 / 454.0
         # self.size = [21, 49]
         # self.size = [13, 34]
-        self.size = [0.9, 3]
+        # self.size = [0.9, 3]
         self.t += dt
 
     def draw_rgb(self, surface, size, screen, shift, intensity = 1):
@@ -198,6 +245,3 @@ class Gameplay2b(GameState):
             self.step = 1
             print(size)
 
-
-class Gameplay2ba(GameState):
-    pass

@@ -97,6 +97,7 @@ class GamePlay(GameState):
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.BACK) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 2):
+            self.next_state = "MAINMENU"
             self.done = True        
         elif (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 1):

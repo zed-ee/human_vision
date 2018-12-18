@@ -115,6 +115,7 @@ class VisionGame(Game):
         #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_04_v03_paigutamise_võrgustikuga.jpg")
         #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_05_v03_paigutamise_võrgustikuga.jpg")
         #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_õige_paigutamise_võrgustikuga.png")
+        #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_11_v02_paigutamise_võrgustik.jpg")
 
 
 
