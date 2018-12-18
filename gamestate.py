@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 import pygame as pg
 import pygame.freetype  # Import the freetype module.
+import os
 
+def LOGO():pass
+LOGO.WHITE = 0
+LOGO.BLACK = 1
 
 class GameState(object):
     """
     Parent class for individual game states to inherit from.
     """
+    background = None
+    title = None
+    logo = LOGO.WHITE
+    title_top = None
 
     def __init__(self):
         self.done = False
@@ -14,9 +22,7 @@ class GameState(object):
         self.next_state = None
         self.screen_rect = pg.display.get_surface().get_rect()
         self.persist = {}
-        self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 48)
-        self.font =  pg.freetype.Font("fonts/Magra-Regular.ttf", 24)
-        self.background = None
+        self.font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 26)
 
     def startup(self, persistent):
         """
@@ -47,4 +53,3 @@ class GameState(object):
         Draw everything to the screen.
         """
         pass
-

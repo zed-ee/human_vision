@@ -13,8 +13,12 @@ import transitions
 import username
 import rotary
 from dmx import dmx
-
+import pygame.freetype  # Import the freetype module.
+import animations
 RASPBERRY = username() == "pi"
+
+def to_center(rect, top, shift=0):
+    return rect.move((screen.get_width() - rect.width)//2 + shift, top)
 
 class Game(object):
     """
@@ -42,13 +46,13 @@ class Game(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
-        self.state.startup(self.state.persist)
+        self.load_state()
+
         
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
         for event in pg.event.get():
-            #print("event", event)
             if event.type == pg.QUIT:
                 self.done = True
                 break
@@ -60,14 +64,12 @@ class Game(object):
         next_state = self.state.next_state
         self.state.done = False
         self.state_name = next_state
+        self.load_state()
+
+    def load_state(self):
         persistent = self.state.persist
         self.state = self.states[self.state_name]
         self.state.startup(persistent)
-        #if next_state == "MAINMENU":
-        #    transitions.run("fadeOutDown", 0.6)
-        #else:
-        #    transitions.run("fadeOutUp", 0.6)
-        dmx.reset()
 
     def update(self, dt):
         """
@@ -83,8 +85,6 @@ class Game(object):
 
     def draw(self):
         """Pass display surface to active state for drawing."""
-        if self.state.background is not None:
-            screen.blit(self.state.background, (0, 0))
         self.state.draw(self.screen)
 
 
@@ -97,15 +97,56 @@ class Game(object):
             dt = self.clock.tick(self.fps)
             self.event_loop()
             self.update(dt)
-            #if transitions.updateScreen() == False:
             self.draw()
             pg.display.update()
 
 
+class VisionGame(Game):
+    layer = None
+    def __init__(self, screen, states, start_state):
+        self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 66)
+        self.logos = [pg.image.load("images/logo_white.png").convert(), pg.image.load("images/logo_black.png").convert()]
+        self.title_colors = [pg.Color(220, 98, 30), pg.Color("white")]
+
+        super(VisionGame, self).__init__(screen, states, start_state)
+        #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/avakuva_v03_paigutamise_võrgustik.jpg")
+        #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_02_skeem_v05_paigutamise_võrgustikuga.jpg")
+        #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_03_v04_paigutamise_võrgustikuga.jpg")
+        #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_04_v03_paigutamise_võrgustikuga.jpg")
+        #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_05_v03_paigutamise_võrgustikuga.jpg")
+
+
+
+    def load_state(self):
+        super(VisionGame, self).load_state()
+        dmx.reset()
+        if self.state.title is not None:
+            self.title = self.title_font.render(self.state.title,  self.title_colors[self.state.logo] )
+
+    def draw(self):
+        """Pass display surface to active state for drawing."""
+        if self.state.background is not None:
+            if isinstance(self.state.background, pg.Surface):
+                screen.blit(self.state.background, (0, 0))
+            else:
+                screen.fill(self.state.background)
+
+        if self.layer is not None:
+            screen.blit(self.layer, (-13, -13))
+
+        if self.state.title is not None:
+            screen.blit(self.title[0], to_center(self.title[1], self.state.title_top or 50, 0))
+
+        if self.state.logo is not None:
+            screen.blit(self.logos[self.state.logo], (0, 0))
+
+
+        self.state.draw(self.screen)
+
 
 if __name__ == "__main__":
     pg.init()
-    screen = pg.display.set_mode((1360, 768), pg.FULLSCREEN if RASPBERRY else 0)
+    screen = pg.display.set_mode((1366, 768), pg.FULLSCREEN if RASPBERRY else 0)
     #transitions.init(screen, 1360, 768)
 
     states = {
@@ -138,7 +179,7 @@ if __name__ == "__main__":
                     
          "HELP": Help()}
 
-    game = Game(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])
+    game = VisionGame(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])
     game.run()
     pg.quit()
     sys.exit()
