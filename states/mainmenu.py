@@ -117,8 +117,6 @@ class SubMenu(MainMenu):
         self.logo = LOGO.WHITE
         self.background = pg.Color("white")
 
-    def draw(self, surface):
-        pass
         
 class Result(GameState):
     texts = ["PROOVI VEEL", "ÕIGE"]
