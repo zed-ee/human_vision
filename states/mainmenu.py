@@ -7,7 +7,7 @@ DEV = True
 from config import config
 from colors import *
 from sprite import *
-from animations import load_images
+from animations import load_images, load_image
 
 class MainMenu(GameState):
     choices = [
@@ -119,17 +119,25 @@ class SubMenu(MainMenu):
 
         
 class Result(GameState):
-    texts = ["PROOVI VEEL", "ÕIGE"]
-    image = pg.image.load("images/ht_result.jpg")
+
     next_state = "MAINMENU"
     
     def __init__(self):
         super(Result, self).__init__()
+        self.ht = AnimatedSprite(position=(900, 196), images=load_images("images/ht/up"))
+        self.bubbles = [Sprite(position=(465, 324), image=load_image("images/bubbles/result_wrong.png")),
+                        Sprite(position=(536, 320), image=load_image("images/bubbles/result_correct.png"))]
+        self.background = pg.Color("white")
+
+    def startup(self, persistent):
+        self.persist = persistent
+        self.next_state = self.persist["next_state"] if "next_state" in self.persist else "MAINMENU"
+        self.result = self.persist["result"] if "result" in self.persist else 1
+        self.title = self.persist["title"] if "title" in self.persist else None
 
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \
             (event.type == pg.MOUSEBUTTONUP and event.button == 1):
-            self.next_state = self.persist["next_state"]
             print("self.next_state", self.next_state)
             self.done = True
         elif (event.type == PUSH_BUTTON and event.button == BUTTONS.BACK) or \
@@ -138,8 +146,7 @@ class Result(GameState):
 
 
     def draw(self, surface):
-        surface.fill( pg.Color("darkgreen"))
-        surface.blit(self.image, (500, 30))
-        self.title_font.render_to(surface, (550, 700), self.texts[self.persist["result"]] )
+        self.ht.draw(surface)
+        self.bubbles[self.result].draw(surface)
 
     

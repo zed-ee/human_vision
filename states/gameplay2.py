@@ -65,10 +65,7 @@ class Gameplay2a(Gameplay1aa):
         print("chek_result", self.persist)
 
     def draw(self, surface):
-        surface.fill(pg.Color("darkgreen"))
-        self.title_font.render_to(surface, (300, 40), self.title)
-        self.font.render_to(surface, (300, 120), self.text[0])
-        self.font.render_to(surface, (300, 160), self.text[1])
+
 
         for i, freq in enumerate(self.frequency):
             pg.draw.circle(surface, RGB[i][1], (200, 360 + i * 128), 40, 0)

@@ -58,7 +58,7 @@ class Gameplay1a(SubMenu):
         dmx.send_rt(*self.rt)
 
     def draw(self, surface):
-        super(Gameplay1a, self).draw(surface)
+        # super(Gameplay1a, self).draw(surface)
         for i in range(0, 9):
             color = self.choices[i]
             (x, y) = (140+i*108, 522)
@@ -107,9 +107,12 @@ class Gameplay1aa(GamePlay):
 
     def startup(self, persistent):
         self.persist = persistent
-        r = COLORS[random.randint(0, len(COLORS)-1)][1]
         self.color = self.persist["choice"] if "choice" in self.persist else COLORS[random.randint(0, len(COLORS)-1)]
-        self.inensity = [r.r, r.g, r.b]
+        if "random" in self.persist:
+            self.inensity = self.persist["random"]
+        else:
+            r = COLORS[random.randint(0, len(COLORS) - 1)][1]
+            self.inensity = [r.r, r.g, r.b]
         self.rt = interpolate(self.color[1].r,self.color[1].g,self.color[1].b)
 
         self.rgb_txt = [
@@ -145,7 +148,7 @@ class Gameplay1aa(GamePlay):
             pg.gfxdraw.aacircle(surface, 140, 380 + i * 80, 33, RGB[i][1])
 
             self.font.render_to(surface, (240, 370+i*80), self.rgb_txt[i])
-            self.font.render_to(surface,  (850, 370+i*80), str(round(self.inensity[i]/255*100))+"%")
+            self.font.render_to(surface,  (900, 370+i*80), str(round(self.inensity[i]/255*100))+"%")
 
         self.font.render_to(surface, (470, 420+0*80), "+")
         self.font.render_to(surface, (470, 420+1*80), "+")
@@ -163,6 +166,9 @@ class Gameplay1aa(GamePlay):
         print("chek_result", result)
         self.persist["result"] = result
         self.persist["next_state"] = "MAINMENU" if result else "GAMEPLAY1aa"
+        self.persist["title"] = self.title
+        self.persist["random"] = self.inensity
+
 
 
 class Gameplay1b(Gameplay1aa):
@@ -208,73 +214,37 @@ class Gameplay1b(Gameplay1aa):
 
 
         
-class Gameplay1ba(GamePlay):
+class Gameplay1ba(Result):
     title = "Sega kokku oma lemmikvärv"
-    text = ["Mulle meeldib ka see värv väga!",
-            "See meenutab mulle värvi nimega 'x'"]
 
     rt = config.load("positions", "offset", [[0,0], [0,0], [0,0]])
 
     def __init__(self):
         super(Gameplay1ba, self).__init__()
         self.next_state = "MAINMENU"
+        self.bubbles = [Sprite(position=(125, 224), image=load_image("images/bubbles/gameplay1ba.png"))]
+        self.result = 0
 
     def startup(self, persistent):
         self.persist = persistent
         dmx.send_rt(*self.rt)
         self.closest = None
-        self.intensity = self.persist["rgb"];
-        min_stdev = 10
-        min_index = 0
-        for i,color in enumerate(ALL_COLORS):
-            stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]), abs(color[1].b - self.intensity[2])])
-            if stdev < min_stdev:
-                min_stdev = stdev
-                min_index = i
-        self.closest = ALL_COLORS[min_index]
+        self.intensity = self.persist["rgb"] if "rgb" in self.persist else [243,43,34];
+        # min_stdev = 10
+        # min_index = 0
+        # for i,color in enumerate(ALL_COLORS):
+        #     stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]), abs(color[1].b - self.intensity[2])])
+        #     if stdev < min_stdev:
+        #         min_stdev = stdev
+        #         min_index = i
+        # self.closest = ALL_COLORS[min_index]
 
 
 
     def draw(self, surface):
-        surface.fill( pg.Color("darkgreen"))
-        pg.draw.circle(surface, self.intensity, self.screen_rect.center, 160, 0);
-        self.title_font.render_to(surface, (300, 40), self.title)
-        self.font.render_to(surface, (400, 620), self.text[0])
-        if self.closest is not None:
-            self.font.render_to(surface, (400, 660), self.text[1].replace("x", self.closest[0]))
+        super(Gameplay1ba, self).draw(surface)
+        (x, y) = self.screen_rect.center
 
-
-class Gameplay1ba(GamePlay):
-    title = "Sega kokku oma lemmikvärv"
-    text = ["Mulle meeldib ka see värv väga!",
-            "See meenutab mulle värvi nimega 'x'"]
-
-    rt = config.load("positions", "offset", [[0, 0], [0, 0], [0, 0]])
-
-    def __init__(self):
-        super(Gameplay1ba, self).__init__()
-        self.next_state = "MAINMENU"
-
-    def startup(self, persistent):
-        self.persist = persistent
-        dmx.send_rt(*self.rt)
-        self.closest = None
-        self.intensity = self.persist["rgb"];
-        min_stdev = 10
-        min_index = 0
-        for i, color in enumerate(ALL_COLORS):
-            stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]),
-                                      abs(color[1].b - self.intensity[2])])
-            if stdev < min_stdev:
-                min_stdev = stdev
-                min_index = i
-        self.closest = ALL_COLORS[min_index]
-
-    def draw(self, surface):
-        surface.fill(pg.Color("darkgreen"))
-        pg.draw.circle(surface, self.intensity, self.screen_rect.center, 160, 0);
-        self.font.render_to(surface, (400, 620), self.text[0])
-        if self.closest is not None:
-            self.font.render_to(surface, (400, 660), self.text[1].replace("x", self.closest[0]))
-
+        pg.gfxdraw.filled_circle(surface, x-100, y+130, 100, self.intensity)
+        pg.gfxdraw.aacircle(surface, x-100, y+130, 100, pg.Color("black"))
 
