@@ -4,6 +4,7 @@ import gc
 
 things = ["VALGUS", "BANAAN", "ARBUUS", "PIMEDUS", "PORGAND", "VESI", "LUMI", "PEET", "MURU"]
 pos = [(0, 0), (226, 250), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (-175, 248), (0, 0)]
+colors = [find_color(color, ALL_COLORS) for color in ["Valge", "Kollane", "Punane", "Must", "Oranž", "Taevasinine", "Valge", "Ametüst", "Roheline"]]
 
 try:
     from omxplayer.player import OMXPlayer
@@ -19,7 +20,6 @@ class Gameplay3(Gameplay1a):
     title = None
 
     choices = range(9)
-    colors = [find_color(color, ALL_COLORS) for color in ["Valge", "Kollane", "Punane", "Must", "Oranž", "Taevasinine", "Valge", "Ametüst", "Roheline"]]
 
     def __init__(self):
         super(Gameplay3, self).__init__()
@@ -30,6 +30,7 @@ class Gameplay3(Gameplay1a):
         self.rt = config.load("positions", "center", [[0,0],[0,0], [0,0]])
         self.persist = persistent
         dmx.send_rt(*self.rt)
+
         self.persist["result"] = True
         self.persist["next_state"] = "GAMEPLAY3"
 
@@ -37,14 +38,15 @@ class Gameplay3(Gameplay1a):
         self.menu.draw(surface)
         for i in range(0, 3):
             for j in range(0, 3):
-                color = self.colors[i*3+j]
+                color = colors[i*3+j]
                 (x, y) = (157+j*278, 268+i*163)
                 if i*3+j == self.active_choice:
                     pg.gfxdraw.aacircle(surface, x, y, 63, pg.Color("black"))
                     pg.gfxdraw.aacircle(surface, x, y, 64, pg.Color("black"))
 
     def update(self, dt):
-        pass
+        c = colors[self.active_choice][1]
+        dmx.send_rgb(c.r, c.g, c.b)
 
 class Gameplay3a(Result):
     animations = []
@@ -69,9 +71,11 @@ class Gameplay3a(Result):
         i = self.persist["choice"] if "choice" in self.persist else 0
         self.image = self.images[i]
         self.invert = things[i] in ["LUMI", "MURU"]
-
-        if OMXPlayer is not None:
-            self.player = OMXPlayer("images/things/" + things[i].lower() + ".mp4")
+        video = "images/things/" + things[i].lower() + ".mp4"
+        if OMXPlayer is not None and os.path.isfile(filepath):
+            self.player = OMXPlayer(video, args=['--no-osd', '--loop'])
+        else:
+            self.player = None
 
         #try:
         #    self.animation = None
@@ -81,6 +85,12 @@ class Gameplay3a(Result):
         #    self.animation = None
         #    print(e)
 
+    def get_event(self, event):
+        super(Gameplay3a, self).get_event(event)
+        if self.done and self.player is not None:
+            self.player.quit()
+            self.player = None
+        
     def draw(self, surface):
         if self.invert:
             if self.animation is not None:
