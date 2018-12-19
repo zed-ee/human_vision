@@ -70,7 +70,8 @@ class Gameplay3a(Result):
         self.image = self.images[i]
         self.invert = things[i] in ["LUMI", "MURU"]
 
-        self.player = OMXPlayer("images/things/" + things[i].lower() + ".mp4")
+        if OMXPlayer is not None:
+            self.player = OMXPlayer("images/things/" + things[i].lower() + ".mp4")
 
         #try:
         #    self.animation = None
