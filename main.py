@@ -105,6 +105,7 @@ class VisionGame(Game):
     layer = None
     def __init__(self, screen, states, start_state):
         self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 66)
+        self.help_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 36)
         self.logos = [pg.image.load("images/logo_white.png").convert_alpha(), pg.image.load("images/logo_black.png").convert_alpha()]
         self.title_colors = [pg.Color(220, 98, 30), pg.Color("white")]
 
@@ -135,6 +136,8 @@ class VisionGame(Game):
         dmx.reset()
         if self.state.title is not None:
             self.title = self.title_font.render(self.state.title,  self.title_colors[self.state.logo] )
+        if self.state.help is not None:
+            self.help = self.help_font.render(self.state.help,  pg.Color("black") )
 
     def draw(self):
         """Pass display surface to active state for drawing."""
@@ -153,8 +156,12 @@ class VisionGame(Game):
         if self.state.logo is not None:
             screen.blit(self.logos[self.state.logo], (0, 0))
 
+        if self.state.help is not None:
+            pg.draw.line(screen, self.title_colors[0], (96, 684), (758, 684), 5)
+            screen.blit(self.help[0], (96, 700))
 
         self.state.draw(self.screen)
+
 
 
 if __name__ == "__main__":

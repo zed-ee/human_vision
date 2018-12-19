@@ -41,6 +41,7 @@ class Gameplay1a(SubMenu):
 
     states = ["GAMEPLAY1aa" for i in range(0, 9)]
     title = "Leia õiged lainepikkused"
+    help = "Kinnita oma valikut punase nupuga"
 
     def __init__(self):
         super(Gameplay1a, self).__init__()
@@ -168,7 +169,7 @@ class Gameplay1aa(GamePlay):
         result = 10 > statistics.stdev([abs(self.color[1].r - self.inensity[0]), abs(self.color[1].g - self.inensity[1]), abs(self.color[1].b - self.inensity[2])])
         print("chek_result", result)
         self.persist["result"] = result
-        self.persist["next_state"] = "MAINMENU" if result else "GAMEPLAY1aa"
+        self.persist["next_state"] = "GAMEPLAY1" if result else "GAMEPLAY1aa"
         self.persist["title"] = self.title
         self.persist["random"] = self.inensity
 
@@ -219,12 +220,13 @@ class Gameplay1b(Gameplay1aa):
         
 class Gameplay1ba(Result):
     title = "Sega kokku oma lemmikvärv"
+    title_orig = "Sega kokku oma lemmikvärv"
 
     rt = config.load("positions", "offset", [[0,0], [0,0], [0,0]])
 
     def __init__(self):
         super(Gameplay1ba, self).__init__()
-        self.next_state = "MAINMENU"
+        self.next_state = "GAMEPLAY1"
         self.bubbles = [Sprite(position=(125, 224), image=load_image("images/bubbles/gameplay1ba.png"))]
         self.result = 0
 
@@ -233,14 +235,21 @@ class Gameplay1ba(Result):
         dmx.send_rt(*self.rt)
         self.closest = None
         self.intensity = self.persist["rgb"] if "rgb" in self.persist else [243,43,34];
-        # min_stdev = 10
-        # min_index = 0
-        # for i,color in enumerate(ALL_COLORS):
-        #     stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]), abs(color[1].b - self.intensity[2])])
-        #     if stdev < min_stdev:
-        #         min_stdev = stdev
-        #         min_index = i
-        # self.closest = ALL_COLORS[min_index]
+        print("intensiry", self.intensity)
+        min_stdev = 10
+        min_index = 0
+        for i,color in enumerate(ALL_COLORS):
+            stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]), abs(color[1].b - self.intensity[2])])
+            if stdev < min_stdev:
+                min_stdev = stdev
+                min_index = i
+        self.closest = ALL_COLORS[min_index]
+        #if min_stdev < 5:
+        #    self.title = ALL_COLORS[min_index][0]
+        #else:
+        #    self.title = self.title_orig
+        print("stdev", min_stdev, self.closest)
+
 
 
 

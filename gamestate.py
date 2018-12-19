@@ -15,6 +15,7 @@ class GameState(object):
     title = None
     logo = LOGO.WHITE
     title_top = None
+    help = None
 
     def __init__(self):
         self.done = False
