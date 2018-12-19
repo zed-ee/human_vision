@@ -31,7 +31,9 @@ class Gameplay1(SubMenu):
         self.logo = LOGO.WHITE
         self.background = pg.Color("white")
 
-
+    def startup(self, persistent):
+        self.persist = {}
+        
     def update(self, dt):
         dmx.send_rt(*(self.rts[self.active_choice]))
 

@@ -9,7 +9,7 @@ class Gameplay2(Gameplay1):
     ]
     states = ["GAMEPLAY2a", "GAMEPLAY2b"]
     title_txt = "Kuidas ekraan töötab?"
-
+    
 class Gameplay2a(Gameplay1aa):
     title = "Kuidas ekraan töötab"
     center = config.load("positions", "sidebyside", [[0, 0], [0, 0], [0, 0]])
@@ -39,7 +39,7 @@ class Gameplay2a(Gameplay1aa):
         if "order" not in self.persist or self.persist["order"] is None:
             while self.order == [0, 1, 2]:
                 self.order = random.sample([0, 1, 2],3)
-            self.inensity = self.positions
+            self.inensity = [x for x in self.positions]
         else:
             self.order = self.persist["order"]
             self.inensity = self.persist["inensity"]
@@ -65,7 +65,11 @@ class Gameplay2a(Gameplay1aa):
 
 
     def chek_result(self):
-        stdev = statistics.stdev([abs(self.positions[i] - self.inensity[self.order[i]]) for i in range(3)])
+        print("positions", self.positions)
+        print("intensity", self.inensity)
+        print("order", self.order)
+        print("diff", [abs(self.positions[self.order[i]] - self.inensity[i]) for i in range(3)])
+        stdev = statistics.stdev([abs(self.positions[self.order[i]] - self.inensity[i]) for i in range(3)])
         print("stdev", stdev)
         result = stdev < 20
 
