@@ -1,8 +1,15 @@
 from states.gameplay1 import *
 from states.mainmenu import *
+import gc
 
 things = ["VALGUS", "BANAAN", "ARBUUS", "PIMEDUS", "PORGAND", "VESI", "LUMI", "PEET", "MURU"]
 pos = [(0, 0), (226, 250), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (-175, 248), (0, 0)]
+
+try:
+    from omxplayer.player import OMXPlayer
+except Exception as e:
+    OMXPlayer = None
+    print(e)
 
 
 class Gameplay3(Gameplay1a):
@@ -47,13 +54,13 @@ class Gameplay3a(Result):
         super(Gameplay3a, self).__init__()
         self.images = [Sprite(position=(0, 0), image=load_image("images/things/"+x+".png")) for x in things]
         self.next_state = "GAMEPLAY3"
-        for i, thing in enumerate(things):
-            try:
-                anim = AnimatedSprite(position=pos[i], images=load_images("images/things/"+thing.lower()+""))
-                self.animations.append(anim)
-            except Exception as e:
-                self.animations.append(None)
-                print(e)
+        #for i, thing in enumerate(things):
+        #    try:
+        #        anim = AnimatedSprite(position=pos[i], images=load_images("images/things/"+thing.lower()+""))
+        #        self.animations.append(anim)
+        #    except Exception as e:
+        #        self.animations.append(None)
+        #        print(e)
 
 
     def startup(self, persistent):
@@ -61,8 +68,17 @@ class Gameplay3a(Result):
         self.persist = persistent
         i = self.persist["choice"] if "choice" in self.persist else 0
         self.image = self.images[i]
-        self.animation = self.animations[i]
         self.invert = things[i] in ["LUMI", "MURU"]
+
+        self.player = OMXPlayer("images/things/" + things[i].lower() + ".mp4")
+
+        #try:
+        #    self.animation = None
+        #    gc.collect()
+        #    self.animation = AnimatedSprite(position=pos[i], images=load_images("images/things/" + things[i].lower() + "", False))
+        #except Exception as e:
+        #    self.animation = None
+        #    print(e)
 
     def draw(self, surface):
         if self.invert:

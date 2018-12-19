@@ -2,7 +2,7 @@ from sprite import AnimatedSprite
 import pygame, os
 
 cache = {}
-def load_images(path):
+def load_images(path, save_to_cache=True):
     """
     Loads all images in directory. The directory must only contain images.
 
@@ -21,7 +21,8 @@ def load_images(path):
             print(file_name)
             image = pygame.image.load(file).convert_alpha()
             # image.set_colorkey((128,255,128))
-            cache[file] = image
+            if save_to_cache:
+                cache[file] = image
         images.append(image)
     return images
 
