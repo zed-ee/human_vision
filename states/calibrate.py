@@ -10,10 +10,13 @@ from config import config
 class Calibrate(MainMenu):
     choices = ["Keskpunkt", "Keskpunkt, nihkega", "Kõrvuti", "Laiali 1", "Laiali 2"]
     states = ["CALIBRATE_CENTER", "CALIBRATE_OFFSET", "CALIBRATE_SIDEBYSIDE", "CALIBRATE_LOW", "CALIBRATE_HIGH"]
-    title_txt = "Kalibreeri prozektorire asukohti"
-    
+    title = "Kalibreeri prozektorire asukohti"
+    option_height = 80
+
     def __init__(self):
         super(Calibrate, self).__init__()
+        self.background = pg.Color("dodgerblue")
+        self.logo = 0
 
     def startup(self, persistent):
         dmx.send_rgb(255,255,255)
@@ -24,7 +27,7 @@ class Calibrate(MainMenu):
         dmx.send_rt(*config.load("positions", conf, [[0,0],[0,0], [0,0]]))
         
 class CalibrateBase(GameState):
-    option_height = 80
+    title = "Kalibreeri prozektorire asukohti"
 
     states = [
         "Liiguta punast", 
@@ -43,8 +46,11 @@ class CalibrateBase(GameState):
         super(CalibrateBase, self).__init__()
         self.next_state = "MAINMENU"
         self.background = pg.Color("dodgerblue")
+        self.logo = 0
 
     def startup(self, persistent):
+        self.persist = persistent
+        self.title = self.persist["choice"]
         self.rt = config.load("positions", self.conf, [[0,0],[0,0], [0,0]]) # rotation & tilt
         dmx.send_rgb(255,255,255)
         dmx.send_rt(*self.rt)
@@ -71,11 +77,7 @@ class CalibrateBase(GameState):
             dmx.send_rt(*self.rt)
 
     def draw(self, surface):
-        surface.fill(self.screen_color)
-
-        self.title_font.render_to(surface, (240, 40), self.title)
         self.font.render_to(surface, (300, 320), self.help)
-        self.title_font.render_to(surface, (400, 260), self.states[self.state])
 
 class CalibrateCenter(CalibrateBase):
     title = "Liiguta prozektorid keskele, valge värvi saamiseks"

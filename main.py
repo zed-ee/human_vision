@@ -105,7 +105,7 @@ class VisionGame(Game):
     layer = None
     def __init__(self, screen, states, start_state):
         self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 66)
-        self.logos = [pg.image.load("images/logo_white.png").convert(), pg.image.load("images/logo_black.png").convert()]
+        self.logos = [pg.image.load("images/logo_white.png").convert_alpha(), pg.image.load("images/logo_black.png").convert_alpha()]
         self.title_colors = [pg.Color(220, 98, 30), pg.Color("white")]
 
         super(VisionGame, self).__init__(screen, states, start_state)
