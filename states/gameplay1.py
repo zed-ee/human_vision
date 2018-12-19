@@ -65,10 +65,11 @@ class Gameplay1a(SubMenu):
             color = self.choices[i]
             (x, y) = (140+i*108, 522)
             if i == self.active_choice:
-                pg.gfxdraw.filled_circle(surface, x, y, 45, pg.Color("black"))
-                pg.gfxdraw.aacircle(surface, x, y, 45, pg.Color("black"))
+                #pg.gfxdraw.filled_circle(surface, x, y, 45, pg.Color("black"))
+                pg.gfxdraw.aacircle(surface, x, y, 46, pg.Color("black"))
+                pg.gfxdraw.aacircle(surface, x, y, 47, pg.Color("black"))
             pg.gfxdraw.filled_circle(surface, x, y, 42, color[1])
-            pg.gfxdraw.aacircle(surface, x, y, 42, pg.Color("black"))
+            pg.gfxdraw.aacircle(surface, x, y, 42, pg.Color(220, 98, 30))
 
         self.bubble.draw(surface)
         self.ht.draw(surface)
@@ -118,9 +119,9 @@ class Gameplay1aa(GamePlay):
         self.rt = interpolate(self.color[1].r,self.color[1].g,self.color[1].b)
 
         self.rgb_txt = [
-            "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus "+str(100*self.color[1].r // 255)+"%    [  hetke valgustugevus:                 ]",
-            "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus "+str(100*self.color[1].g // 255)+"%    [  hetke valgustugevus:                 ]",
-            "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus "+str(100*self.color[1].b // 255)+"%    [  hetke valgustugevus:                 ]",
+            "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus "+str(100*self.color[1].r // 255)+"%    [  hetke valgustugevus:                   ]",
+            "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus "+str(100*self.color[1].g // 255)+"%    [  hetke valgustugevus:                   ]",
+            "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus "+str(100*self.color[1].b // 255)+"%    [  hetke valgustugevus:                   ]",
         ]
         #self.rgb_txt = [
         #    "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus [            ]",
@@ -150,11 +151,11 @@ class Gameplay1aa(GamePlay):
             pg.gfxdraw.aacircle(surface, 140, 380 + i * 80, 33, RGB[i][1])
 
             self.font.render_to(surface, (240, 370+i*80), self.rgb_txt[i])
-            self.font.render_to(surface,  (900, 370+i*80), str(round(self.inensity[i]/255*100))+"%")
+            self.font.render_to(surface,  (910, 370+i*80), str(round(self.inensity[i]/255*100))+"%")
 
-        self.font.render_to(surface, (470, 420+0*80), "+")
-        self.font.render_to(surface, (470, 420+1*80), "+")
-        self.font.render_to(surface, (470, 430+2*80), "=")
+        self.font.render_to(surface, (570, 420+0*80), "+")
+        self.font.render_to(surface, (570, 420+1*80), "+")
+        self.font.render_to(surface, (570, 430+2*80), "=")
         
         pg.gfxdraw.filled_circle(surface, 140, 400+3*80, 33, self.color[1])
         pg.gfxdraw.aacircle(surface, 140, 400+3*80, 33, self.color[1])
