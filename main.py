@@ -118,7 +118,18 @@ class VisionGame(Game):
         #self.layer = pg.image.load("../human__vision_elemendid/Kujundus/HT_slaid_11_v02_paigutamise_võrgustik.jpg")
 
 
-
+    def event_loop(self):
+        """Events are passed for handling to the current state."""
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                self.done = True
+                break
+            elif (event.type == PUSH_BUTTON and event.button == BUTTONS.CALIBRATE) or \
+                (event.type == pg.MOUSEBUTTONUP and event.button == 3):
+                self.state_name = "CALIBRATE"
+                self.load_state()
+            self.state.get_event(event)
+            
     def load_state(self):
         super(VisionGame, self).load_state()
         dmx.reset()

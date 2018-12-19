@@ -24,7 +24,7 @@ class Calibrate(MainMenu):
         dmx.send_rt(*config.load("positions", conf, [[0,0],[0,0], [0,0]]))
         
 class CalibrateBase(GameState):
-    screen_color = pg.Color("dodgerblue")
+    option_height = 80
 
     states = [
         "Liiguta punast", 
@@ -42,6 +42,7 @@ class CalibrateBase(GameState):
     def __init__(self):
         super(CalibrateBase, self).__init__()
         self.next_state = "MAINMENU"
+        self.background = pg.Color("dodgerblue")
 
     def startup(self, persistent):
         self.rt = config.load("positions", self.conf, [[0,0],[0,0], [0,0]]) # rotation & tilt

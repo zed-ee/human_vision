@@ -63,11 +63,11 @@ class AnimatedSprite(pygame.sprite.Sprite):
     def update(self, dt, x = None, y = None):
         """This is the method that's being called when 'all_sprites.update(dt)' is called."""
         # Switch between the two update methods by commenting/uncommenting.
-        self.update_time_dependent(dt)
         if x != None:
             self.rect.left = x
         if y != None:
             self.rect.top = y
+        self.update_time_dependent(dt)
         #self.update_frame_dependent()
 
     def draw(self, surface):
