@@ -2,14 +2,7 @@ from states.gameplay1 import *
 import math, time
 SAMPLE_RATE = 22050 ## This many array entries == 1 second of sound.
 
-class Gameplay2(Gameplay1):
-    choices = [
-        "Kuidas ekraan töötab? (lained)",
-        "Kuidas ekraan töötab? (pikslid)"
-    ]
-    states = ["GAMEPLAY2a", "GAMEPLAY2b"]
-    title_txt = "Kuidas ekraan töötab?"
-    
+
 class Gameplay2a(Gameplay1aa):
     title = "Kuidas ekraan töötab"
     center = config.load("positions", "sidebyside", [[0, 0], [0, 0], [0, 0]])
@@ -21,6 +14,7 @@ class Gameplay2a(Gameplay1aa):
     order = [0, 1, 2]
     rotary_step = 3
     positions = [30, 127, 225]
+    help = "Liigutamiseks kasuta pöördnuppe, kinnita vastus sinise nupuga"
 
     def __init__(self):
         super(Gameplay2a, self).__init__()
@@ -68,14 +62,15 @@ class Gameplay2a(Gameplay1aa):
         print("positions", self.positions)
         print("intensity", self.inensity)
         print("order", self.order)
-        print("diff", [abs(self.positions[self.order[i]] - self.inensity[i]) for i in range(3)])
-        stdev = statistics.stdev([abs(self.positions[self.order[i]] - self.inensity[i]) for i in range(3)])
+        print("intensity order", [self.inensity[self.order[i]] for i in range(3)])
+        print("diff", [abs(self.inensity[self.order[i]] - self.positions[i]) for i in range(3)])
+        stdev = statistics.stdev([abs(self.inensity[self.order[i]] - self.positions[i]) for i in range(3)])
         print("stdev", stdev)
         result = stdev < 20
 
         self.next_state = "RESULT"
         self.persist["result"] = result
-        self.persist["next_state"] = "GAMEPLAY2" if result else "GAMEPLAY2a"
+        self.persist["next_state"] = "GAMEPLAY2b" if result else "GAMEPLAY2a"
         self.persist["inensity"] = None if result else self.inensity
         self.persist["order"] = None if result else self.order
         self.persist["title"] = self.title
@@ -105,6 +100,10 @@ class Gameplay2a(Gameplay1aa):
         self.b.draw(surface)
 
 
+class Gameplay2(Gameplay2a):
+    pass
+
+
 class Gameplay2ab(Gameplay2a):
 
     text = ["Inimese silmas tajuvad värve kolme tüüpi rakud, mida nimetatakse kolvikesteks.",
@@ -121,29 +120,35 @@ class Gameplay2ab(Gameplay2a):
         pass
 
 class Gameplay2b(Result):
-    answer = 25
+    help = "Jätkamiseks vajuta sinist nuppu"
+
+
     def __init__(self):
         super(Gameplay2b, self).__init__()
-        self.images = [Sprite(position=(0, 0), image=load_image("images/pixel/PIKSEL_"+str(x+1)+".png")) for x in range(2)]
-        self.next_state = "GAMEPLAY2b"
+        self.image = Sprite(position=(0, 0), image=load_image("images/pixel/PIKSEL_1.png"))
+        self.next_state = "GAMEPLAY2ba"
+        self.pixels = AnimatedSprite(position=(0, 0), images=load_images("images/pixel/anim"))
+        self.surface2 = pg.Surface([500, 500])
 
     def startup(self, persistent):
         self.rt = config.load("positions", "center", [[0, 0], [0, 0], [0, 0]])
         self.persist = persistent
-        i = self.persist["sub_state"] if "sub_state" in self.persist else 0
-        self.image = self.images[i]
-        i = i + 1
-        if i >= len(self.images):
-            self.next_state = "GAMEPLAY2ba"
-        else:
-            self.persist["sub_state"] = i
         self.persist["choice"] = 0
+
+    def update(self, dt):
+        self.pixels.update(dt / 50)
 
     def draw(self, surface):
         self.image.draw(surface)
 
+        self.pixels.draw(self.surface2)
+        surface.blit(self.surface2, [800, 186])
+
+
 class Gameplay2ba(SubMenu):
     answer = 25
+    help = "Vastuse sisestamiseks pööra nuppe, kinnita vastus sinise nuppuga"
+
     def __init__(self):
         super(Gameplay2ba, self).__init__()
         self.image = Sprite(position=(0, 0), image=load_image("images/pixel/PIKSEL_3.png"))

@@ -85,7 +85,7 @@ class Gameplay1aa(GamePlay):
                  "Selleks tuleb sul prožektori valgused seadistada õigetele valgustugevustele, kasutades pöördnuppe."]
     title = "Leia õige lainepikkus"
     rotary_step = 1
-    
+    mousebutton = 0
     def __init__(self):
         super(Gameplay1aa, self).__init__()
         self.rect = pg.Rect((0, 0), (128, 128)).move(960, 420)
@@ -102,10 +102,23 @@ class Gameplay1aa(GamePlay):
             else:
                self.inensity[event.button] = max(0, self.inensity[event.button] - self.rotary_step)
         elif event.type == pg.MOUSEBUTTONDOWN:
+            print("event", event)
             if event.button == 4:
-                self.inensity[0] = min(255, self.inensity[0] + self.rotary_step)
+                self.inensity[self.mousebutton] = min(255, self.inensity[self.mousebutton] + self.rotary_step)
             elif event.button == 5:
-                self.inensity[0] = max(0, self.inensity[0] - self.rotary_step)
+                self.inensity[self.mousebutton] = max(0, self.inensity[self.mousebutton] - self.rotary_step)
+            else:
+                super(Gameplay1aa, self).get_event(event)
+
+        elif event.type == pg.KEYDOWN:
+            if event.unicode == 'r':
+                self.mousebutton = 0
+            elif event.unicode == 'g':
+                self.mousebutton = 1
+            elif event.unicode == 'b':
+                self.mousebutton = 2
+            else:
+                super(Gameplay1aa, self).get_event(event)
         else:
             super(Gameplay1aa, self).get_event(event)
 

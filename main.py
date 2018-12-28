@@ -105,7 +105,7 @@ class VisionGame(Game):
     layer = None
     def __init__(self, screen, states, start_state):
         self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 66)
-        self.help_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 36)
+        self.help_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 33)
         self.logos = [pg.image.load("images/logo_white.png").convert_alpha(), pg.image.load("images/logo_black.png").convert_alpha()]
         self.title_colors = [pg.Color(220, 98, 30), pg.Color("white")]
 
@@ -156,11 +156,12 @@ class VisionGame(Game):
         if self.state.logo is not None:
             screen.blit(self.logos[self.state.logo], (0, 0))
 
+        self.state.draw(self.screen)
+
         if self.state.help is not None:
             pg.draw.line(screen, self.title_colors[0], (96, 684), (758, 684), 5)
             screen.blit(self.help[0], (96, 700))
 
-        self.state.draw(self.screen)
 
 
 
@@ -189,6 +190,7 @@ if __name__ == "__main__":
 
         "GAMEPLAY3": Gameplay3(),
         "GAMEPLAY3a": Gameplay3a(),
+        "GAMEPLAY3b": Gameplay3b(),
 
         "CALIBRATE": Calibrate(),
         "CALIBRATE_CENTER": CalibrateCenter(),

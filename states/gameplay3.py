@@ -13,16 +13,41 @@ except Exception as e:
     print(e)
 
 
-class Gameplay3(Gameplay1a):
+class Gameplay3(Result):
+    t = 0.0
+    def __init__(self):
+        super(Gameplay3, self).__init__()
+        self.image = Sprite(position=(0, 0), image=load_image("images/things/intro.png"))
+        self.next_state = "GAMEPLAY3a"
 
-    states = ["GAMEPLAY3a" for i in range(0, 9)]
+    def startup(self, persistent):
+        self.rt = config.load("positions", "center", [[0, 0], [0, 0], [0, 0]])
+        self.persist = persistent
+        video = "images/things/intro.mp4"
+        if OMXPlayer is not None and os.path.isfile(video):
+            self.player = OMXPlayer(video, args=['--no-osd', '--loop'])
+        else:
+            self.player = None
+        self.t = 0
+
+    def update(self, dt):
+        self.t += dt
+        if self.t > 15000:
+            self.done = True
+
+    def draw(self, surface):
+        self.image.draw(surface)
+
+class Gameplay3a(Gameplay1a):
+
+    states = ["GAMEPLAY3b" for i in range(0, 9)]
 
     title = None
 
     choices = range(9)
 
     def __init__(self):
-        super(Gameplay3, self).__init__()
+        super(Gameplay3a, self).__init__()
         self.menu = Sprite(position=(0, 0), image=load_image("images/things/menu.png"))
 
     def startup(self, persistent):
@@ -48,14 +73,14 @@ class Gameplay3(Gameplay1a):
         c = colors[self.active_choice][1]
         dmx.send_rgb(c.r, c.g, c.b)
 
-class Gameplay3a(Result):
+class Gameplay3b(Result):
     animations = []
     animation = None
     invert = 0
     def __init__(self):
-        super(Gameplay3a, self).__init__()
+        super(Gameplay3b, self).__init__()
         self.images = [Sprite(position=(0, 0), image=load_image("images/things/"+x+".png")) for x in things]
-        self.next_state = "GAMEPLAY3"
+        self.next_state = "GAMEPLAY3a"
         #for i, thing in enumerate(things):
         #    try:
         #        anim = AnimatedSprite(position=pos[i], images=load_images("images/things/"+thing.lower()+""))
@@ -72,7 +97,7 @@ class Gameplay3a(Result):
         self.image = self.images[i]
         self.invert = things[i] in ["LUMI", "MURU"]
         video = "images/things/" + things[i].lower() + ".mp4"
-        if OMXPlayer is not None and os.path.isfile(filepath):
+        if OMXPlayer is not None and os.path.isfile(video):
             self.player = OMXPlayer(video, args=['--no-osd', '--loop'])
         else:
             self.player = None
@@ -86,7 +111,7 @@ class Gameplay3a(Result):
         #    print(e)
 
     def get_event(self, event):
-        super(Gameplay3a, self).get_event(event)
+        super(Gameplay3b, self).get_event(event)
         if self.done and self.player is not None:
             self.player.quit()
             self.player = None
