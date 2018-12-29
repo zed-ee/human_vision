@@ -122,27 +122,66 @@ class Gameplay2ab(Gameplay2a):
 class Gameplay2b(Result):
     help = "Jätkamiseks vajuta punast nuppu"
 
+    pixels_spec = [(1, 1, 14, 14, 14, 14, 148, 472, 0),
+                   (2, 2, 7, 7, 7, 7, 74, 236, 5000),
+                   (5, 4, 3, 3, 3, 3, 37, 119, 2000),
+                   (9, 9, 2, 2, 2, 2, 18, 58, 2000),
+                   (19, 19, 2, 2, 1, 1, 8, 29, 2000),
+                   (39, 39, 1, 1, 0, 0, 4, 12, 2000),
+                   (89, 79, 0, 1, 0, 0, 2, 6, 5000),
+                   (159, 139, 0, 0, 0, 0, 1, 1, 5000)#,
+                   #(1, 1, 14, 14, 14, 14, (148+14)*3, 472, 2000)
+                   ]
+    spec = pixels_spec[0]
 
     def __init__(self):
         super(Gameplay2b, self).__init__()
         self.image = Sprite(position=(0, 0), image=load_image("images/pixel/PIKSEL_1.png"))
         self.next_state = "GAMEPLAY2ba"
-        self.pixels = AnimatedSprite(position=(0, 0), images=load_images("images/pixel/anim"))
+        #self.pixels = AnimatedSprite(position=(0, 0), images=load_images("images/pixel/anim"))
         self.surface2 = pg.Surface([500, 500])
 
     def startup(self, persistent):
         self.rt = config.load("positions", "center", [[0, 0], [0, 0], [0, 0]])
         self.persist = persistent
         self.persist["choice"] = 0
+        self.t = 0.0
 
     def update(self, dt):
-        self.pixels.update(dt / 50)
+        #self.pixels.update(dt / 50)
+        self.t += dt
+        ct = 0
+        for i in range(1, len(self.pixels_spec)):
+            ct += self.pixels_spec[i][8]
+            if ct > self.t:
+                self.spec = self.pixels_spec[i-1]
+                return
+
+        print("reset", self.t, ct)
+        self.t = 0
 
     def draw(self, surface):
         self.image.draw(surface)
 
-        self.pixels.draw(self.surface2)
+        #self.pixels.draw(self.surface2)
+        self.surface2.fill(pg.Color("black"))
+        self.draw_pixels(self.surface2)
         surface.blit(self.surface2, [800, 186])
+
+    def draw_pixels(self, surface2 ):
+
+        s = self.spec;
+        dim = pg.Rect(s[4:8])
+        if dim.height == 1:
+            rect = pg.Rect(self.pixels_spec[-1][4:8])
+            pg.draw.rect(surface2, pg.Color(230, 230, 230), rect)
+        else:
+            for x in range(s[0]):
+                for y in range(s[1]):
+                    rect = dim.move((dim.right) * 3 * x + s[2] * x, (dim.bottom + s[3]) * y)
+                    pg.draw.rect(surface2, pg.Color("red"), rect)
+                    pg.draw.rect(surface2, pg.Color("green"), rect.move(dim.right,0))
+                    pg.draw.rect(surface2, pg.Color("blue"), rect.move(2*dim.right,0))
 
 
 class Gameplay2ba(SubMenu):
