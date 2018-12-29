@@ -25,7 +25,7 @@ class RotaryEncoder:
         self.buttons = {13: BUTTONS.ENTER, 21: BUTTONS.BACK, 4: BUTTONS.CALIBRATE }
 
         self.levA = [0, 0, 0]
-        self.levB =[0, 0, 0]
+        self.levB = [0, 0, 0]
 
         self.lastGpio = [None, None, None]
 
@@ -43,7 +43,7 @@ class RotaryEncoder:
         self.cbB = [self.pi.callback(pin, pigpio.EITHER_EDGE, self.pulse(i)) for i, pin in enumerate(self.gpioB)]
         
         
-        self.cbButton = [self.pi.callback(pin, pigpio.EITHER_EDGE, self.button) for i, pin in enumerate(self.buttons.keys())]
+        self.cbButton = [self.pi.callback(pin, pigpio.EITHER_EDGE, self.button) for event, pin in enumerate(self.buttons.keys())]
         
         self.draw()
 
@@ -51,7 +51,7 @@ class RotaryEncoder:
         pass
         
     def button(self, gpio, level, tick):
-        if level and (tick - self.lastClick > 300000) : # 300ms
+        if (level == 0 and tick - self.lastClick > 300000): # 300ms
             print("select", gpio, level, tick, tick - self.lastClick)
             pg.event.post(pg.event.Event(PUSH_BUTTON, {"button": self.buttons[gpio]}))
         self.lastClick = tick
@@ -116,22 +116,11 @@ if __name__ == "__main__":
     import pigpio
     from pyudmx import pyudmx
 
+    pg.init()
+
     pos = [0,0,0]
     dmx = [2, 3, 4]
     dev = None
-
-    def callback(i, way):
-
-        global pos, dmx, dev
-
-        pos[i] += way
-        if pos[i] < 0: 
-            pos[i] = 0
-        if pos[i] > 16:
-            pos[i] = 16
-            
-        n = dev.send_single_value(dmx[i], min(255, pos[i]**2))
-        print (n, dmx[i], pos)
 
     pi = pigpio.pi()
     dev = pyudmx.uDMXDevice()
@@ -141,13 +130,15 @@ if __name__ == "__main__":
     for ch in [1, 2, 3, 4,8]:
         dev.send_single_value(ch, 255)
         
-    decoder = RotaryEncoder(pi, callback)
-    try:
-        mainloop()
-    except:
-        pass
-
-    decoder.cancel()
+    done = False
+    while not done:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                done = True
+                break
+            print(event)
+            
+    encoder.cancel()
 
     pi.stop()
     for ch in dmx:

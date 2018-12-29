@@ -167,6 +167,7 @@ class VisionGame(Game):
 
 if __name__ == "__main__":
     pg.init()
+    pg.mouse.set_visible(False)
     screen = pg.display.set_mode((1360, 768), pg.FULLSCREEN if RASPBERRY else 0)
     #transitions.init(screen, 1360, 768)
 

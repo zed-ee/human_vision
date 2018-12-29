@@ -38,6 +38,13 @@ class Gameplay3(Result):
     def draw(self, surface):
         self.image.draw(surface)
 
+    def get_event(self, event):
+        super(Gameplay3, self).get_event(event)
+        if self.done and self.player is not None:
+            self.player.quit()
+            self.player = None
+
+            
 class Gameplay3a(Gameplay1a):
     help = "Tee valik kasutades pöördnuppe, kinnita valik punase nupuga"
     states = ["GAMEPLAY3b" for i in range(0, 9)]
@@ -73,6 +80,7 @@ class Gameplay3a(Gameplay1a):
         c = colors[self.active_choice][1]
         dmx.send_rgb(c.r, c.g, c.b)
 
+            
 class Gameplay3b(Result):
     animations = []
     animation = None
