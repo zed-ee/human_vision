@@ -18,7 +18,7 @@ class Gameplay1(SubMenu):
     states = ["GAMEPLAY1a", "GAMEPLAY1b"]
     title = "Kuidas värve segada?"
     option_height = 230
-    default_color = pg.Color(0, 0, 0)
+    default_color = pg.Color(80, 80, 80)
 
     rts = [
         config.load("positions", "offset", [[0,0],[0,0], [0,0]]),
@@ -86,6 +86,7 @@ class Gameplay1aa(GamePlay):
     title = "Leia õige lainepikkus"
     rotary_step = 1
     mousebutton = 0
+    help = "Kinnita vastus punase nupuga"
     def __init__(self):
         super(Gameplay1aa, self).__init__()
         self.rect = pg.Rect((0, 0), (128, 128)).move(960, 420)
@@ -130,12 +131,12 @@ class Gameplay1aa(GamePlay):
         else:
             r = COLORS[random.randint(0, len(COLORS) - 1)][1]
             self.inensity = [r.r, r.g, r.b]
-        self.rt = interpolate(self.color[1].r,self.color[1].g,self.color[1].b)
+        self.rt = interpolate(*self.inensity)
 
         self.rgb_txt = [
-            "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus "+str(100*self.color[1].r // 255)+"%    [  hetke valgustugevus:                   ]",
-            "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus "+str(100*self.color[1].g // 255)+"%    [  hetke valgustugevus:                   ]",
-            "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus "+str(100*self.color[1].b // 255)+"%    [  hetke valgustugevus:                   ]",
+            "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus   "+str(100*self.color[1].r // 255)+"%",
+            "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus   "+str(100*self.color[1].g // 255)+"%",
+            "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus   "+str(100*self.color[1].b // 255)+"%",
         ]
         #self.rgb_txt = [
         #    "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus [            ]",
@@ -143,7 +144,7 @@ class Gameplay1aa(GamePlay):
         #    "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus [            ]",
         #]
 
-        self.color_txt = "Domineeriv lainepikkus "+ str(self.color[5]) + " nm, valgustugevus "+str(self.color[4])+"%"
+        self.color_txt = "Domineeriv lainepikkus "+ str(self.color[5]) + " nm, valgustugevus   "+str(self.color[4])+"%"
 
         self.title_with_color = self.title + " - " + self.color[0]
 
@@ -164,16 +165,16 @@ class Gameplay1aa(GamePlay):
             pg.gfxdraw.filled_circle(surface, 140, 380 + i * 80, 33, RGB[i][1])
             pg.gfxdraw.aacircle(surface, 140, 380 + i * 80, 33, RGB[i][1])
 
-            self.font.render_to(surface, (240, 370+i*80), self.rgb_txt[i])
-            self.font.render_to(surface,  (910, 370+i*80), str(round(self.inensity[i]/255*100))+"%")
+            self.font.render_to(surface, (210, 370+i*80), self.rgb_txt[i])
+            self.font.render_to(surface,  (680, 370+i*80), " hetke valgustugevus:  [  "+ str(round(self.inensity[i]/255*100))+"%   ]")
 
-        self.font.render_to(surface, (570, 420+0*80), "+")
-        self.font.render_to(surface, (570, 420+1*80), "+")
-        self.font.render_to(surface, (570, 430+2*80), "=")
+        self.font.render_to(surface, (616, 416+0*80), "+")
+        self.font.render_to(surface, (616, 416+1*80), "+")
+        self.font.render_to(surface, (616, 430+2*80), "=")
         
         pg.gfxdraw.filled_circle(surface, 140, 400+3*80, 33, self.color[1])
         pg.gfxdraw.aacircle(surface, 140, 400+3*80, 33, self.color[1])
-        self.font.render_to(surface, (240, 390+3*80), self.color_txt)
+        self.font.render_to(surface, (210, 390+3*80), self.color_txt)
         
         #pg.draw.rect(surface, pg.Color(self.inensity[0],self.inensity[1],self.inensity[2],255), self.rect)
 
@@ -200,15 +201,23 @@ class Gameplay1b(Gameplay1aa):
         self.bubble = Sprite(position=(106, 216), image=load_image("images/bubbles/gameplay1b.png"))
 
     def startup(self, persistent):
-        persistent["choice"] = COLORS[random.randint(0, len(COLORS)-1)]
-        super(Gameplay1b, self).startup(persistent)
+        #persistent["choice"] = COLORS[random.randint(0, len(COLORS)-1)]
+        #super(Gameplay1b, self).startup(persistent)
         dmx.send_rt(*self.center)
         self.rgb_txt = [
-            "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus [                ]",
-            "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus [                ]",
-            "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus [                ]",
+            "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus  ",
+            "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus  ",
+            "Lainepikkus "+ str(RGB[2][5]) + " nm, valgustugevus  ",
         ]
-        
+        #if "rgb" in self.persist:
+        #    del self.persist["rgb"]
+        if "rgb" in self.persist:
+            self.inensity = self.persist["rgb"]
+        else:
+            r = COLORS[random.randint(0, len(COLORS) - 1)]
+            print("r", r)
+            self.inensity = [r[1].r, r[1].g, r[1].b]
+
     def update(self, dt):
         dmx.send_rgb(*self.inensity)
         
@@ -227,7 +236,7 @@ class Gameplay1b(Gameplay1aa):
             pg.gfxdraw.aacircle(surface, 140, 380 + i * 110, 33, RGB[i][1])
 
             self.font.render_to(surface, (230, 370+i*110), self.rgb_txt[i])
-            self.font.render_to(surface, (600, 370 + i * 110), str(round(self.inensity[i]/255*100))+"%", pg.Color("gray10"))
+            self.font.render_to(surface, (660, 370 + i * 110), "[   " + str(round(self.inensity[i]/255*100)) + "%   ] ", pg.Color("gray10"))
 
 
         
@@ -239,7 +248,7 @@ class Gameplay1ba(Result):
 
     def __init__(self):
         super(Gameplay1ba, self).__init__()
-        self.next_state = "GAMEPLAY1"
+        self.next_state = "GAMEPLAY1b"
         self.bubbles = [Sprite(position=(125, 224), image=load_image("images/bubbles/gameplay1ba.png"))]
         self.result = 0
 
@@ -248,19 +257,22 @@ class Gameplay1ba(Result):
         dmx.send_rt(*self.rt)
         self.closest = None
         self.intensity = self.persist["rgb"] if "rgb" in self.persist else [243,43,34];
-        print("intensiry", self.intensity)
+        hsv = pg.Color( self.intensity[0], self.intensity[1], self.intensity[2]).hsva
+        print("intensity", self.intensity, hsv)
         min_stdev = 10
         min_index = 0
         for i,color in enumerate(ALL_COLORS):
-            stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]), abs(color[1].b - self.intensity[2])])
+            # stdev = statistics.stdev([abs(color[1].r - self.intensity[0]), abs(color[1].g - self.intensity[1]), abs(color[1].b - self.intensity[2])])
+            stdev = statistics.stdev([abs(color[2] - hsv[0]), abs(color[3] - hsv[1]), abs(color[4] - hsv[2])])
             if stdev < min_stdev:
                 min_stdev = stdev
                 min_index = i
+                print("new min: ", stdev, [abs(color[2] - hsv[0]), abs(color[3] - hsv[1]), abs(color[4] - hsv[2])], color)
         self.closest = ALL_COLORS[min_index]
-        #if min_stdev < 5:
-        #    self.title = ALL_COLORS[min_index][0]
-        #else:
-        #    self.title = self.title_orig
+        if min_stdev < 1:
+            self.title = ALL_COLORS[min_index][0]
+        else:
+            self.title = self.title_orig
         print("stdev", min_stdev, self.closest)
 
 

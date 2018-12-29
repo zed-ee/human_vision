@@ -106,7 +106,7 @@ class GamePlay(GameState):
             
 class SubMenu(MainMenu):
     choices = []
-    default_color = pg.Color(0, 0, 0)
+    default_color = pg.Color(40, 40, 40)
 
     rts = [
         config.load("positions", "offset", [[0,0],[0,0], [0,0]]),
@@ -122,7 +122,7 @@ class SubMenu(MainMenu):
 class Result(GameState):
 
     next_state = "MAINMENU"
-    
+    help_txt = ["Vajuta punast nuppu, et proovida uuesti.", "Jätkamiseks vajuta punast nuppu."]
     def __init__(self):
         super(Result, self).__init__()
         self.ht = AnimatedSprite(position=(900, 196), images=load_images("images/ht/up"))
@@ -135,6 +135,7 @@ class Result(GameState):
         self.next_state = self.persist["next_state"] if "next_state" in self.persist else "MAINMENU"
         self.result = self.persist["result"] if "result" in self.persist else 1
         self.title = self.persist["title"] if "title" in self.persist else None
+        self.help = self.help_txt[self.persist["result"]] if "result" in self.persist else None
 
     def get_event(self, event):
         if (event.type == PUSH_BUTTON and event.button == BUTTONS.ENTER) or \

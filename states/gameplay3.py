@@ -39,7 +39,7 @@ class Gameplay3(Result):
         self.image.draw(surface)
 
 class Gameplay3a(Gameplay1a):
-
+    help = "Tee valik kasutades pöördnuppe, kinnita valik punase nupuga"
     states = ["GAMEPLAY3b" for i in range(0, 9)]
 
     title = None
@@ -95,7 +95,7 @@ class Gameplay3b(Result):
         self.persist = persistent
         i = self.persist["choice"] if "choice" in self.persist else 0
         self.image = self.images[i]
-        self.invert = things[i] in ["LUMI", "MURU"]
+        # self.invert = things[i] in ["LUMI", "MURU"]
         video = "images/things/" + things[i].lower() + ".mp4"
         if OMXPlayer is not None and os.path.isfile(video):
             self.player = OMXPlayer(video, args=['--no-osd', '--loop'])

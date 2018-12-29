@@ -14,7 +14,7 @@ class Gameplay2a(Gameplay1aa):
     order = [0, 1, 2]
     rotary_step = 3
     positions = [30, 127, 225]
-    help = "Liigutamiseks kasuta pöördnuppe, kinnita vastus sinise nupuga"
+    help = "Liigutamiseks kasuta pöördnuppe, kinnita vastus punase nupuga"
 
     def __init__(self):
         super(Gameplay2a, self).__init__()
@@ -120,7 +120,7 @@ class Gameplay2ab(Gameplay2a):
         pass
 
 class Gameplay2b(Result):
-    help = "Jätkamiseks vajuta sinist nuppu"
+    help = "Jätkamiseks vajuta punast nuppu"
 
 
     def __init__(self):
@@ -147,7 +147,7 @@ class Gameplay2b(Result):
 
 class Gameplay2ba(SubMenu):
     answer = 25
-    help = "Vastuse sisestamiseks pööra nuppe, kinnita vastus sinise nuppuga"
+    help = "Vastuse sisestamiseks pööra nuppe, kinnita vastus punase nuppuga"
 
     def __init__(self):
         super(Gameplay2ba, self).__init__()
