@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import datetime
 import pygame as pg
 from states.help import Help
 from states.mainmenu import MainMenu
@@ -103,6 +104,7 @@ class Game(object):
 
 class VisionGame(Game):
     layer = None
+    timeout = 0
     def __init__(self, screen, states, start_state):
         self.title_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 66)
         self.help_font = pg.freetype.Font("fonts/Ranchers-Regular.ttf", 33)
@@ -126,11 +128,21 @@ class VisionGame(Game):
                 self.done = True
                 break
             elif (event.type == PUSH_BUTTON and event.button == BUTTONS.CALIBRATE) or \
-                (event.type == pg.MOUSEBUTTONUP and event.button == 3):
+                (event.type == pg.MOUSEBUTTONUP and event.button == 3) or \
+                (event.type == pg.KEYDOWN and event.unicode == 'c'):
                 self.state_name = "CALIBRATE"
                 self.load_state()
             self.state.get_event(event)
-            
+
+    def update(self, dt):
+        super(VisionGame, self).update(dt)
+        self.timeout += dt
+        if self.timeout > 300000: # 5min
+            print('restart', datetime.datetime.now())
+            self.timeout = 0
+            self.state_name = "MAINMENU"
+            self.load_state()
+
     def load_state(self):
         super(VisionGame, self).load_state()
         dmx.reset()
@@ -203,6 +215,7 @@ if __name__ == "__main__":
          "HELP": Help()}
 
     game = VisionGame(screen, states, "MAINMENU" if len(sys.argv) == 1 else sys.argv[1])
+    print(datetime.datetime.now())
     game.run()
     pg.quit()
     sys.exit()
