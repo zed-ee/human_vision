@@ -40,7 +40,7 @@ class CalibrateBase(GameState):
     title = ""
     rt = [[0,0],[0,0], [0,0]] # rotation & tilt
     conf = ""
-    help = "Punane - pööra, Roheline - kalluta, Enter - salvesta"
+    help = "Punane - pööra, Roheline - kalluta, Edasi - salvesta"
 
     def __init__(self):
         super(CalibrateBase, self).__init__()
@@ -77,7 +77,7 @@ class CalibrateBase(GameState):
             dmx.send_rt(*self.rt)
 
     def draw(self, surface):
-        self.font.render_to(surface, (300, 320), self.help)
+        self.font.render_to(surface, (300, 320), self.states[self.state])
 
 class CalibrateCenter(CalibrateBase):
     title = "Liiguta prozektorid keskele, valge värvi saamiseks"

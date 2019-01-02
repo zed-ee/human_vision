@@ -33,7 +33,8 @@ class Gameplay1(SubMenu):
 
     def startup(self, persistent):
         self.persist = {}
-        
+        dmx.send_rgb(255, 255, 255)
+
     def update(self, dt):
         dmx.send_rt(*(self.rts[self.active_choice]))
 
@@ -41,7 +42,7 @@ class Gameplay1a(SubMenu):
 
     states = ["GAMEPLAY1aa" for i in range(0, 9)]
     title = "Leia õiged lainepikkused"
-    help = "Kinnita oma valikut punase nupuga"
+    help = "Vali värv pöördnupuga ja kinnita valik punase nupuga"
 
     def __init__(self):
         super(Gameplay1a, self).__init__()
@@ -131,8 +132,8 @@ class Gameplay1aa(GamePlay):
         else:
             r = COLORS[random.randint(0, len(COLORS) - 1)][1]
             self.inensity = [r.r, r.g, r.b]
-        self.rt = interpolate(*self.inensity)
-
+        # self.rt = interpolate(*self.inensity)
+        self.rt = interpolate(self.color[1].r,self.color[1].g,self.color[1].b)
         self.rgb_txt = [
             "Lainepikkus "+ str(RGB[0][5]) + " nm, valgustugevus   "+str(100*self.color[1].r // 255)+"%",
             "Lainepikkus "+ str(RGB[1][5]) + " nm, valgustugevus   "+str(100*self.color[1].g // 255)+"%",

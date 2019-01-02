@@ -4,7 +4,6 @@ import pygame as pg
 COLORS = [
     ("Alisariinpunane", pg.Color(227, 38, 54, 255), 355, 83, 89, 452),
     ("Ametüst", pg.Color(153, 102, 204, 255), 270, 50, 80, 492),
-    ("Aprikoos", pg.Color(251, 206, 117, 255), 30, 25, 87, 606),
     #("Beebisinine", pg.Color(111, 255, 255, 255), 180, 12, 100, 535),
     #("Beež", pg.Color(245, 245, 220, 255), 60, 10, 96, 592),
     #("Berliini sinine", pg.Color(0, 49, 83, 255), 205, 100, 33, 523),
@@ -12,12 +11,10 @@ COLORS = [
     #("Hele türkiis", pg.Color(8, 232, 222, 255), 177, 97, 91, 536),
     #("Kahvatu rukkilillesinine", pg.Color(171, 205, 239, 255), 210, 28, 94, 521),
     #("Kahvatu roosa", pg.Color(250, 218, 221, 255), 354, 13, 98, 453),
-    ("Kastanpruun", pg.Color(113, 47, 44, 255), 7, 66, 44, 617),
     #("Kinaverpunane", pg.Color(255, 77, 0, 255), 18, 100, 100, 612),
     #("Kollane", pg.Color(255, 255, 0, 255), 60, 100, 100, 592),
     #("Meresinine", pg.Color(0, 0, 128, 255), 240, 100, 50, 507),
     #("Merevaik", pg.Color(255, 191, 0, 255), 45, 100, 100, 599),
-    ("Messing", pg.Color(181, 166, 66, 255), 52, 47, 48, 603),
     #("Punane", pg.Color(255, 0, 0, 255), 0, 100, 100, 620),
     #("Pruun", pg.Color(150, 75, 0, 255), 30, 100, 59, 606),
     #("Rohekassinine", pg.Color(0, 255, 255, 255), 180, 100, 100, 535),
@@ -50,6 +47,8 @@ RGB = [
 ]
 
 OTHER_COLORS = [
+    ("Messing", pg.Color(181, 166, 66, 255), 52, 47, 48, 603),
+    ("Aprikoos", pg.Color(251, 206, 117, 255), 30, 25, 87, 606),
     ("Beebisinine", pg.Color(111, 255, 255, 255), 180, 12, 100, 535),
     ("Beež", pg.Color(245, 245, 220, 255), 60, 10, 96, 592),
     ("Berliini sinine", pg.Color(0, 49, 83, 255), 205, 100, 33, 523),
@@ -57,6 +56,7 @@ OTHER_COLORS = [
     ("Hele türkiis", pg.Color(8, 232, 222, 255), 177, 97, 91, 536),
     ("Kahvatu rukkilillesinine", pg.Color(171, 205, 239, 255), 210, 28, 94, 521),
     ("Kahvatu roosa", pg.Color(250, 218, 221, 255), 354, 13, 98, 453),
+    ("Kastanpruun", pg.Color(113, 47, 44, 255), 7, 66, 44, 617),
     ("Kinaverpunane", pg.Color(255, 77, 0, 255), 18, 100, 100, 612),
     ("Kollane", pg.Color(255, 255, 0, 255), 60, 100, 100, 592),
     ("Meresinine", pg.Color(0, 0, 128, 255), 240, 100, 50, 507),

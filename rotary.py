@@ -51,7 +51,7 @@ class RotaryEncoder:
         pass
         
     def button(self, gpio, level, tick):
-        if (level == 0 and tick - self.lastClick > 600): # 600ms
+        if (level == 0 and tick - self.lastClick > 1200): # 1200ms
             print("select", gpio, level, tick, tick - self.lastClick)
             pg.event.post(pg.event.Event(PUSH_BUTTON, {"button": self.buttons[gpio]}))
         self.lastClick = tick

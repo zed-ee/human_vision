@@ -123,6 +123,7 @@ class VisionGame(Game):
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
+        self.timeout = 0
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
